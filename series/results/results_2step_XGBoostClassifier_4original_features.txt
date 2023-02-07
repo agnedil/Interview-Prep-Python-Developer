@@ -1,0 +1,1565 @@
+Code in: 20220812_2step_XGBoost_classification_4_original_features.ipynb
+
+
+__OVERALL CONCLUSIONS__
+* For all of the experiments, `RMSE~14, MAE~11, R2~-1`
+* The best accuracy is around [0.045 - 0.047]
+* Shuffled vs. non-shuffled data - no clear winner
+* Small vs. large n_steps - no clear winner, but small n_steps are not considerably worse and sometimes they are better than some large n_steps
+
+-----
+
+
+__IN MORE DETAIL__
+__y_pos=0__:
+* Better results w/shuffled data
+* Best results when n_step=4 (0.047), also good results for n_step=1 or 8 (which is suspicious)
+
+__y_pos=1__:
+* Better results with non-shuffled time series (especially for larger n_steps)
+* Best results when n_steps=7 (0.045), also good for n_step=8 or 9
+
+__y_pos=2__:
+* Better results seem to be w/non-shuffled time series data, but the best result is w/shuffled data
+* Best results when n_steps=2 (0.047)
+
+__y_pos=3__:
+* Better results with sometimes shuffled, sometimes non-shuffled data
+* Best results when n_steps=6 (0.045) w/non-shuffled time series data and when n_step=9 (0.045) w/shuffled data!
+
+
+
+Y_POS = O
+
+2022-08-14 19:21:59
+Event: texas2step
+Train-test split: time series
+Steps: 1  |  Y_pos: 0  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.020361990950226245
+	Macro F1 score:    0.021863045801362356
+	Weighted F1 score: 0.02018190000022613
+
+RMSE = 14.3708
+MAE  = 11.7783
+R2   = -1.0
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 19:22:08
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 1  |  Y_pos: 0  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.029345372460496615
+	Macro F1 score:    0.02819593180065346
+	Weighted F1 score: 0.02842889084451297
+
+RMSE = 13.5411
+MAE  = 10.8916
+R2   = -0.7852
+
+
+====================================================================================================
+
+
+2022-08-14 19:22:21
+Event: texas2step
+Train-test split: time series
+Steps: 2  |  Y_pos: 0  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.01809954751131222
+	Macro F1 score:    0.01649035034695146
+	Weighted F1 score: 0.015735584523322674
+
+RMSE = 14.2198
+MAE  = 11.4276
+R2   = -0.9582
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 19:22:31
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 2  |  Y_pos: 0  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.022573363431151242
+	Macro F1 score:    0.01911244100617915
+	Weighted F1 score: 0.020322900250511287
+
+RMSE = 13.9026
+MAE  = 11.3544
+R2   = -0.8818
+
+
+====================================================================================================
+
+
+2022-08-14 19:22:44
+Event: texas2step
+Train-test split: time series
+Steps: 3  |  Y_pos: 0  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.01583710407239819
+	Macro F1 score:    0.014043176503130736
+	Weighted F1 score: 0.013341247836521039
+
+RMSE = 13.9277
+MAE  = 11.4548
+R2   = -0.8786
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 19:22:56
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 3  |  Y_pos: 0  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.020316027088036117
+	Macro F1 score:    0.018848945738851625
+	Weighted F1 score: 0.01971580070856435
+
+RMSE = 14.2383
+MAE  = 11.5779
+R2   = -0.9737
+
+
+====================================================================================================
+
+
+2022-08-14 19:23:13
+Event: texas2step
+Train-test split: time series
+Steps: 4  |  Y_pos: 0  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.03167420814479638
+	Macro F1 score:    0.029380932847351205
+	Weighted F1 score: 0.02969797407782863
+
+RMSE = 14.2081
+MAE  = 11.7217
+R2   = -0.955
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 19:23:27
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 4  |  Y_pos: 0  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.04740406320541761
+	Macro F1 score:    0.04300190923670834
+	Weighted F1 score: 0.04396269157938503
+
+RMSE = 14.2262
+MAE  = 11.465
+R2   = -0.9704
+
+
+====================================================================================================
+
+
+2022-08-14 19:23:44
+Event: texas2step
+Train-test split: time series
+Steps: 5  |  Y_pos: 0  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.024886877828054297
+	Macro F1 score:    0.025343400794669766
+	Weighted F1 score: 0.0246367447285942
+
+RMSE = 14.749
+MAE  = 12.2081
+R2   = -1.1067
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 19:23:58
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 5  |  Y_pos: 0  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.03619909502262444
+	Macro F1 score:    0.03385370817754626
+	Weighted F1 score: 0.034578253648650574
+
+RMSE = 15.4261
+MAE  = 12.6041
+R2   = -1.3163
+
+
+====================================================================================================
+
+
+2022-08-14 19:24:16
+Event: texas2step
+Train-test split: time series
+Steps: 6  |  Y_pos: 0  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.022675736961451247
+	Macro F1 score:    0.023212957855814998
+	Weighted F1 score: 0.020891157597506805
+
+RMSE = 14.9897
+MAE  = 12.4558
+R2   = -1.1712
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 19:24:32
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 6  |  Y_pos: 0  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.03619909502262444
+	Macro F1 score:    0.03441959786378319
+	Weighted F1 score: 0.035050605727717524
+
+RMSE = 14.9735
+MAE  = 12.0023
+R2   = -1.1745
+
+
+====================================================================================================
+
+
+2022-08-14 19:24:52
+Event: texas2step
+Train-test split: time series
+Steps: 7  |  Y_pos: 0  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.027210884353741496
+	Macro F1 score:    0.02607950313528407
+	Weighted F1 score: 0.02556705216240294
+
+RMSE = 14.2946
+MAE  = 11.6508
+R2   = -0.9745
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 19:25:11
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 7  |  Y_pos: 0  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.03619909502262444
+	Macro F1 score:    0.035157605647277754
+	Weighted F1 score: 0.035231266384243246
+
+RMSE = 14.0158
+MAE  = 11.267
+R2   = -0.9089
+
+
+====================================================================================================
+
+
+2022-08-14 19:25:31
+Event: texas2step
+Train-test split: time series
+Steps: 8  |  Y_pos: 0  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.022675736961451247
+	Macro F1 score:    0.0191689529373882
+	Weighted F1 score: 0.01976224346561665
+
+RMSE = 14.5992
+MAE  = 12.0522
+R2   = -1.0595
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 19:25:50
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 8  |  Y_pos: 0  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.042986425339366516
+	Macro F1 score:    0.04126815744904936
+	Weighted F1 score: 0.04282400497456979
+
+RMSE = 14.4216
+MAE  = 11.5656
+R2   = -1.0211
+
+
+====================================================================================================
+
+
+2022-08-14 19:26:11
+Event: texas2step
+Train-test split: time series
+Steps: 9  |  Y_pos: 0  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.015873015873015872
+	Macro F1 score:    0.0125750609543713
+	Weighted F1 score: 0.015525577931160854
+
+RMSE = 14.303
+MAE  = 11.8231
+R2   = -0.9768
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 19:26:31
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 9  |  Y_pos: 0  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.03167420814479638
+	Macro F1 score:    0.028955464481739464
+	Weighted F1 score: 0.030862046065163556
+
+RMSE = 14.3202
+MAE  = 11.5339
+R2   = -0.9927
+
+
+====================================================================================================
+
+
+2022-08-14 19:26:55
+Event: texas2step
+Train-test split: time series
+Steps: 10  |  Y_pos: 0  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.022675736961451247
+	Macro F1 score:    0.018156483532564535
+	Weighted F1 score: 0.019344294727869252
+
+RMSE = 14.3742
+MAE  = 11.7755
+R2   = -0.9966
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 19:27:16
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 10  |  Y_pos: 0  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.031746031746031744
+	Macro F1 score:    0.02795025186697754
+	Weighted F1 score: 0.029760718588176565
+
+RMSE = 14.6373
+MAE  = 11.7687
+R2   = -1.0829
+
+
+====================================================================================================
+
+
+Y_POS=1
+
+
+2022-08-14 22:32:00
+Event: texas2step
+Train-test split: time series
+Steps: 1  |  Y_pos: 1  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.02262443438914027
+	Macro F1 score:    0.02192872838470208
+	Weighted F1 score: 0.0203522117022713
+
+RMSE = 14.5276
+MAE  = 11.8507
+R2   = -0.9691
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 22:32:10
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 1  |  Y_pos: 1  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.03611738148984198
+	Macro F1 score:    0.033973429665856564
+	Weighted F1 score: 0.03416078762942411
+
+RMSE = 13.8501
+MAE  = 11.377
+R2   = -0.8289
+
+
+====================================================================================================
+
+
+2022-08-14 22:32:22
+Event: texas2step
+Train-test split: time series
+Steps: 2  |  Y_pos: 1  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.033936651583710405
+	Macro F1 score:    0.028428094878833795
+	Weighted F1 score: 0.03103085534880667
+
+RMSE = 14.6178
+MAE  = 11.8281
+R2   = -0.9936
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 22:32:32
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 2  |  Y_pos: 1  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.022573363431151242
+	Macro F1 score:    0.020478789661513914
+	Weighted F1 score: 0.020884257458355836
+
+RMSE = 14.822
+MAE  = 12.3612
+R2   = -1.1017
+
+
+====================================================================================================
+
+
+2022-08-14 22:32:44
+Event: texas2step
+Train-test split: time series
+Steps: 3  |  Y_pos: 1  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.01809954751131222
+	Macro F1 score:    0.018326382612096896
+	Weighted F1 score: 0.018576676382106246
+
+RMSE = 14.3723
+MAE  = 11.8167
+R2   = -0.9273
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 22:32:55
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 3  |  Y_pos: 1  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.03837471783295711
+	Macro F1 score:    0.034379117659055665
+	Weighted F1 score: 0.03467165118235349
+
+RMSE = 14.6167
+MAE  = 12.0948
+R2   = -1.0439
+
+
+====================================================================================================
+
+
+2022-08-14 22:33:12
+Event: texas2step
+Train-test split: time series
+Steps: 4  |  Y_pos: 1  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.03167420814479638
+	Macro F1 score:    0.02865163230659145
+	Weighted F1 score: 0.028497658611410268
+
+RMSE = 14.2613
+MAE  = 11.4118
+R2   = -0.8976
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 22:33:26
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 4  |  Y_pos: 1  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.020316027088036117
+	Macro F1 score:    0.01784443568991145
+	Weighted F1 score: 0.018679708451434802
+
+RMSE = 14.4826
+MAE  = 12.0474
+R2   = -1.0065
+
+
+====================================================================================================
+
+
+2022-08-14 22:33:42
+Event: texas2step
+Train-test split: time series
+Steps: 5  |  Y_pos: 1  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.027149321266968326
+	Macro F1 score:    0.024375391409104722
+	Weighted F1 score: 0.022941173241551982
+
+RMSE = 14.1938
+MAE  = 11.5407
+R2   = -0.8797
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 22:33:57
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 5  |  Y_pos: 1  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.02262443438914027
+	Macro F1 score:    0.02196323643997103
+	Weighted F1 score: 0.022180134405180144
+
+RMSE = 14.2878
+MAE  = 11.6652
+R2   = -0.9529
+
+
+====================================================================================================
+
+
+2022-08-14 22:34:13
+Event: texas2step
+Train-test split: time series
+Steps: 6  |  Y_pos: 1  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.03854875283446712
+	Macro F1 score:    0.03557926941455345
+	Weighted F1 score: 0.03667223433404968
+
+RMSE = 14.3879
+MAE  = 11.5918
+R2   = -0.9278
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 22:34:28
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 6  |  Y_pos: 1  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.024886877828054297
+	Macro F1 score:    0.02317871506957124
+	Weighted F1 score: 0.024486264962146318
+
+RMSE = 14.4093
+MAE  = 11.8077
+R2   = -0.9859
+
+
+====================================================================================================
+
+
+2022-08-14 22:34:48
+Event: texas2step
+Train-test split: time series
+Steps: 7  |  Y_pos: 1  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.045351473922902494
+	Macro F1 score:    0.0438495176780366
+	Weighted F1 score: 0.04416589325240661
+
+RMSE = 14.3158
+MAE  = 11.4558
+R2   = -0.9085
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 22:35:06
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 7  |  Y_pos: 1  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.027149321266968326
+	Macro F1 score:    0.026000239770962462
+	Weighted F1 score: 0.02612972889730347
+
+RMSE = 14.4868
+MAE  = 12.0023
+R2   = -1.0086
+
+
+====================================================================================================
+
+
+2022-08-14 22:35:26
+Event: texas2step
+Train-test split: time series
+Steps: 8  |  Y_pos: 1  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.04081632653061224
+	Macro F1 score:    0.03920666789446293
+	Weighted F1 score: 0.03807017032728897
+
+RMSE = 14.7186
+MAE  = 11.8435
+R2   = -1.0174
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+/Users/andrew.nedilko/opt/anaconda3/envs/iq/lib/python3.8/site-packages/sklearn/metrics/_classification.py:1221: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+2022-08-14 22:35:44
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 8  |  Y_pos: 1  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.029411764705882353
+	Macro F1 score:    0.026520626759940286
+	Weighted F1 score: 0.026897814613904388
+
+RMSE = 14.7378
+MAE  = 12.0724
+R2   = -1.0788
+
+
+====================================================================================================
+
+
+2022-08-14 22:36:04
+Event: texas2step
+Train-test split: time series
+Steps: 9  |  Y_pos: 1  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.04081632653061224
+	Macro F1 score:    0.034923825231386645
+	Weighted F1 score: 0.038536984718474075
+
+RMSE = 14.6592
+MAE  = 11.78
+R2   = -1.0012
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 22:36:24
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 9  |  Y_pos: 1  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.03619909502262444
+	Macro F1 score:    0.03247616446963294
+	Weighted F1 score: 0.03226726042129736
+
+RMSE = 14.0578
+MAE  = 11.4638
+R2   = -0.8914
+
+
+====================================================================================================
+
+
+2022-08-14 22:36:47
+Event: texas2step
+Train-test split: time series
+Steps: 10  |  Y_pos: 1  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.034013605442176874
+	Macro F1 score:    0.03164495046379988
+	Weighted F1 score: 0.03271929968784775
+
+RMSE = 14.8687
+MAE  = 12.0612
+R2   = -1.0588
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 22:37:10
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 10  |  Y_pos: 1  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.02947845804988662
+	Macro F1 score:    0.02536917765489194
+	Weighted F1 score: 0.02637102827579018
+
+RMSE = 14.4216
+MAE  = 11.6871
+R2   = -0.9948
+
+
+====================================================================================================
+
+
+
+Y_POS=2
+
+2022-08-14 22:06:16
+Event: texas2step
+Train-test split: time series
+Steps: 1  |  Y_pos: 2  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.03619909502262444
+	Macro F1 score:    0.038912760859298096
+	Weighted F1 score: 0.038254913390522324
+
+RMSE = 13.8825
+MAE  = 11.086
+R2   = -0.9385
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 22:06:26
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 1  |  Y_pos: 2  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.020316027088036117
+	Macro F1 score:    0.01820019269448562
+	Weighted F1 score: 0.018489379326853007
+
+RMSE = 15.0611
+MAE  = 12.6659
+R2   = -1.198
+
+
+====================================================================================================
+
+
+2022-08-14 22:06:38
+Event: texas2step
+Train-test split: time series
+Steps: 2  |  Y_pos: 2  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.03619909502262444
+	Macro F1 score:    0.0325227109679676
+	Weighted F1 score: 0.03527714417395763
+
+RMSE = 14.1018
+MAE  = 11.6471
+R2   = -1.0003
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 22:06:49
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 2  |  Y_pos: 2  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.04740406320541761
+	Macro F1 score:    0.044948964291233004
+	Weighted F1 score: 0.04579333404702352
+
+RMSE = 14.6085
+MAE  = 11.7065
+R2   = -1.0679
+
+
+====================================================================================================
+
+
+2022-08-14 22:07:03
+Event: texas2step
+Train-test split: time series
+Steps: 3  |  Y_pos: 2  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.020361990950226245
+	Macro F1 score:    0.019418676561533704
+	Weighted F1 score: 0.022987905340846517
+
+RMSE = 14.219
+MAE  = 11.7738
+R2   = -1.0337
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 22:07:14
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 3  |  Y_pos: 2  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.029345372460496615
+	Macro F1 score:    0.02609670883529346
+	Weighted F1 score: 0.028379637237572645
+
+RMSE = 14.1636
+MAE  = 11.5011
+R2   = -0.9439
+
+
+====================================================================================================
+
+
+2022-08-14 22:07:30
+Event: texas2step
+Train-test split: time series
+Steps: 4  |  Y_pos: 2  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.033936651583710405
+	Macro F1 score:    0.030504035006363176
+	Weighted F1 score: 0.030323465049903377
+
+RMSE = 14.5158
+MAE  = 11.9072
+R2   = -1.1194
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 22:07:46
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 4  |  Y_pos: 2  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.03160270880361174
+	Macro F1 score:    0.03046242864962077
+	Weighted F1 score: 0.03212153785517217
+
+RMSE = 14.4639
+MAE  = 11.9165
+R2   = -1.0272
+
+
+====================================================================================================
+
+
+/Users/andrew.nedilko/opt/anaconda3/envs/iq/lib/python3.8/site-packages/sklearn/metrics/_classification.py:1221: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+2022-08-14 22:08:03
+Event: texas2step
+Train-test split: time series
+Steps: 5  |  Y_pos: 2  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.033936651583710405
+	Macro F1 score:    0.029296149334273134
+	Weighted F1 score: 0.03143119384230729
+
+RMSE = 14.5934
+MAE  = 11.9932
+R2   = -1.1421
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 22:08:17
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 5  |  Y_pos: 2  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.027149321266968326
+	Macro F1 score:    0.02662865683287706
+	Weighted F1 score: 0.02696927652984779
+
+RMSE = 14.9221
+MAE  = 12.2805
+R2   = -1.1609
+
+
+====================================================================================================
+
+
+2022-08-14 22:08:34
+Event: texas2step
+Train-test split: time series
+Steps: 6  |  Y_pos: 2  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.031746031746031744
+	Macro F1 score:    0.029213703866211232
+	Weighted F1 score: 0.030887943783443644
+
+RMSE = 14.9986
+MAE  = 12.2948
+R2   = -1.26
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 22:08:49
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 6  |  Y_pos: 2  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.01809954751131222
+	Macro F1 score:    0.01600905225146913
+	Weighted F1 score: 0.015940939059704683
+
+RMSE = 14.6711
+MAE  = 11.9887
+R2   = -1.0865
+
+
+====================================================================================================
+
+
+2022-08-14 22:09:09
+Event: texas2step
+Train-test split: time series
+Steps: 7  |  Y_pos: 2  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.034013605442176874
+	Macro F1 score:    0.028777591973244147
+	Weighted F1 score: 0.03500875935658544
+
+RMSE = 15.2298
+MAE  = 12.5533
+R2   = -1.3302
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 22:09:27
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 7  |  Y_pos: 2  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.029411764705882353
+	Macro F1 score:    0.02476432780330201
+	Weighted F1 score: 0.025654632516019994
+
+RMSE = 14.8748
+MAE  = 11.9977
+R2   = -1.1448
+
+
+====================================================================================================
+
+
+2022-08-14 22:09:48
+Event: texas2step
+Train-test split: time series
+Steps: 8  |  Y_pos: 2  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.031746031746031744
+	Macro F1 score:    0.030327669638697412
+	Weighted F1 score: 0.032254309219155314
+
+RMSE = 15.6739
+MAE  = 13.127
+R2   = -1.4681
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 22:10:07
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 8  |  Y_pos: 2  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.024886877828054297
+	Macro F1 score:    0.02076660034625025
+	Weighted F1 score: 0.022437542962584548
+
+RMSE = 14.1003
+MAE  = 11.3439
+R2   = -0.9273
+
+
+====================================================================================================
+
+
+2022-08-14 22:10:28
+Event: texas2step
+Train-test split: time series
+Steps: 9  |  Y_pos: 2  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.027210884353741496
+	Macro F1 score:    0.022876614438427895
+	Weighted F1 score: 0.02662105851881903
+
+RMSE = 14.8495
+MAE  = 12.2948
+R2   = -1.2153
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 22:10:46
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 9  |  Y_pos: 2  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.027149321266968326
+	Macro F1 score:    0.0266015163201864
+	Weighted F1 score: 0.027206405944934602
+
+RMSE = 14.9582
+MAE  = 12.0317
+R2   = -1.1689
+
+
+====================================================================================================
+
+
+2022-08-14 22:11:10
+Event: texas2step
+Train-test split: time series
+Steps: 10  |  Y_pos: 2  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.015873015873015872
+	Macro F1 score:    0.013746569655105019
+	Weighted F1 score: 0.015308122120217225
+
+RMSE = 14.21
+MAE  = 11.6848
+R2   = -1.0286
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 22:11:32
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 10  |  Y_pos: 2  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.013605442176870748
+	Macro F1 score:    0.012156378805798281
+	Weighted F1 score: 0.012755405418807935
+
+RMSE = 14.9901
+MAE  = 12.3265
+R2   = -1.1814
+
+
+====================================================================================================
+
+
+
+Y_POS=3
+
+
+2022-08-14 22:18:16
+Event: texas2step
+Train-test split: time series
+Steps: 1  |  Y_pos: 3  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.020361990950226245
+	Macro F1 score:    0.019129744633504035
+	Weighted F1 score: 0.019617483720841662
+
+RMSE = 14.2312
+MAE  = 11.767
+R2   = -0.8525
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 22:18:26
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 1  |  Y_pos: 3  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.022573363431151242
+	Macro F1 score:    0.02182515866669637
+	Weighted F1 score: 0.023080942167674853
+
+RMSE = 14.195
+MAE  = 11.4176
+R2   = -0.9331
+
+
+====================================================================================================
+
+
+2022-08-14 22:18:38
+Event: texas2step
+Train-test split: time series
+Steps: 2  |  Y_pos: 3  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.02262443438914027
+	Macro F1 score:    0.021390101598081225
+	Weighted F1 score: 0.019914815867577276
+
+RMSE = 14.553
+MAE  = 11.8937
+R2   = -0.9372
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 22:18:49
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 2  |  Y_pos: 3  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.01580135440180587
+	Macro F1 score:    0.01538418494940234
+	Weighted F1 score: 0.0156460430775869
+
+RMSE = 14.0569
+MAE  = 11.4063
+R2   = -0.8957
+
+
+====================================================================================================
+
+
+2022-08-14 22:19:03
+Event: texas2step
+Train-test split: time series
+Steps: 3  |  Y_pos: 3  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.01809954751131222
+	Macro F1 score:    0.018826258342214647
+	Weighted F1 score: 0.016430002324498514
+
+RMSE = 14.3004
+MAE  = 11.7511
+R2   = -0.8706
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 22:19:14
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 3  |  Y_pos: 3  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.029345372460496615
+	Macro F1 score:    0.025984738754176374
+	Weighted F1 score: 0.027507511383807956
+
+RMSE = 14.3079
+MAE  = 11.5011
+R2   = -0.9665
+
+
+====================================================================================================
+
+
+2022-08-14 22:19:30
+Event: texas2step
+Train-test split: time series
+Steps: 4  |  Y_pos: 3  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.020361990950226245
+	Macro F1 score:    0.021293073222952267
+	Weighted F1 score: 0.021054631065322016
+
+RMSE = 14.7973
+MAE  = 11.9299
+R2   = -1.0029
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 22:19:44
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 4  |  Y_pos: 3  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.024830699774266364
+	Macro F1 score:    0.022203470695562996
+	Weighted F1 score: 0.02348860537186298
+
+RMSE = 14.5024
+MAE  = 11.6727
+R2   = -1.0203
+
+
+====================================================================================================
+
+
+2022-08-14 22:20:01
+Event: texas2step
+Train-test split: time series
+Steps: 5  |  Y_pos: 3  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.02262443438914027
+	Macro F1 score:    0.021417817546849807
+	Weighted F1 score: 0.019303246313901696
+
+RMSE = 15.1499
+MAE  = 12.3869
+R2   = -1.0994
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 22:20:17
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 5  |  Y_pos: 3  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.020361990950226245
+	Macro F1 score:    0.017133404156922098
+	Weighted F1 score: 0.0186159607739118
+
+RMSE = 13.9786
+MAE  = 11.2466
+R2   = -0.8804
+
+
+====================================================================================================
+
+
+2022-08-14 22:20:33
+Event: texas2step
+Train-test split: time series
+Steps: 6  |  Y_pos: 3  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.027210884353741496
+	Macro F1 score:    0.032067803781769134
+	Weighted F1 score: 0.0270607325841827
+
+RMSE = 14.9215
+MAE  = 11.9796
+R2   = -1.032
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 22:20:48
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 6  |  Y_pos: 3  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.04524886877828054
+	Macro F1 score:    0.045742820954212594
+	Weighted F1 score: 0.04686746544214131
+
+RMSE = 14.0259
+MAE  = 11.3009
+R2   = -0.8932
+
+
+====================================================================================================
+
+
+2022-08-14 22:21:08
+Event: texas2step
+Train-test split: time series
+Steps: 7  |  Y_pos: 3  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.031746031746031744
+	Macro F1 score:    0.02904739276466032
+	Weighted F1 score: 0.027509153227376
+
+RMSE = 14.8825
+MAE  = 12.1655
+R2   = -1.0214
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 22:21:25
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 7  |  Y_pos: 3  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.033936651583710405
+	Macro F1 score:    0.03123543782037092
+	Weighted F1 score: 0.0340974239962362
+
+RMSE = 14.1362
+MAE  = 11.5158
+R2   = -0.9231
+
+
+====================================================================================================
+
+
+2022-08-14 22:21:45
+Event: texas2step
+Train-test split: time series
+Steps: 8  |  Y_pos: 3  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.02947845804988662
+	Macro F1 score:    0.028069488010832956
+	Weighted F1 score: 0.025869559040943606
+
+RMSE = 14.9146
+MAE  = 12.0862
+R2   = -1.0301
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 22:22:03
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 8  |  Y_pos: 3  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.03619909502262444
+	Macro F1 score:    0.03193444759947223
+	Weighted F1 score: 0.0328380579043709
+
+RMSE = 14.3296
+MAE  = 11.7081
+R2   = -0.9735
+
+
+====================================================================================================
+
+
+2022-08-14 22:22:24
+Event: texas2step
+Train-test split: time series
+Steps: 9  |  Y_pos: 3  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.045351473922902494
+	Macro F1 score:    0.04117919051287318
+	Weighted F1 score: 0.04322936978985592
+
+RMSE = 14.4351
+MAE  = 11.6372
+R2   = -0.9017
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 22:22:43
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 9  |  Y_pos: 3  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.027149321266968326
+	Macro F1 score:    0.02482721085461312
+	Weighted F1 score: 0.02547435309621258
+
+RMSE = 14.1598
+MAE  = 11.5679
+R2   = -0.927
+
+
+====================================================================================================
+
+
+2022-08-14 22:23:07
+Event: texas2step
+Train-test split: time series
+Steps: 10  |  Y_pos: 3  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.02947845804988662
+	Macro F1 score:    0.02833335213436012
+	Weighted F1 score: 0.0282394356761158
+
+RMSE = 14.7766
+MAE  = 11.9388
+R2   = -0.9927
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2022-08-14 22:23:29
+Event: texas2step
+Train-test split: stratified w/shuffling
+Steps: 10  |  Y_pos: 3  |  Random state: 34
+Features: ['Num1', 'Num2', 'Num3', 'Num4']
+Overlap: True  |  Flatten: True
+
+Classification report
+	Accuracy:          0.03854875283446712
+	Macro F1 score:    0.03426069681477691
+	Weighted F1 score: 0.036088063115875736
+
+RMSE = 14.0924
+MAE  = 11.39
+R2   = -0.9122
+
+
+====================================================================================================

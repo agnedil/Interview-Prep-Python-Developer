@@ -1,0 +1,17 @@
+Pick 3 Day, Apr 29, 2002 to Nov 11, 2007:
+Game Name, Month, Day, Year, Num1, Num2, Num3
+
+Pick 3 Night, Oct 25, 1993 to Nov 11, 2007:
+Game Name, Month, Day, Year, Num1, Num2, Num3
+
+Pick 3 Day and Pick 3 Night, Nov 12, 2007 to Oct 3, 2010:
+Game Name, Month, Day, Year, Num1, Num2, Num3, Sum It Up®
+
+Pick 3 Day and Pick 3 Night, Oct 4, 2010 to Oct 30, 2010:
+Game Name, Month, Day, Year, Num1, Num2, Num3, Sum It Up, Green Ball Drawn
+
+Pick 3 Day and Pick 3 Night, Oct 31, 2010 to present:
+Game Name, Month, Day, Year, Num1, Num2, Num3, Sum It Up
+
+Pick 3 Morning and Pick 3 Evening, Sep 9, 2013 to present:
+Game Name, Month, Day, Year, Num1, Num2, Num3, Sum It Up

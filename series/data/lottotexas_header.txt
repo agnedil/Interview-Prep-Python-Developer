@@ -1,8 +1,0 @@
-Nov 14, 1992 to May 3, 2003:
-Game Name, Month, Day, Year, Num1, Num2, Num3, Num4, Num5, Num6
-
-May 7, 2003 to Apr 22, 2006:
-Game Name, Month, Day, Year, Num1, Num2, Num3, Num4, Num5, Bonus Ball
-
-Apr 26, 2006 to present:
-Game Name, Month, Day, Year, Num1, Num2, Num3, Num4, Num5, Num6

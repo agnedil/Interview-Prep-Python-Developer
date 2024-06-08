@@ -1,0 +1,11 @@
+{
+    "name": "John Doe",
+    "age": 30,
+    "email": "johndoe@example.com",
+    "is_active": true,
+    "skills": [
+        "Python",
+        "Machine Learning",
+        "Data Analysis"
+    ]
+}

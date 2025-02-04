@@ -1,0 +1,1344 @@
+CHAPTER 1. OVERVIEW OF ML SYSTEMS
+
+ML has rapidly integrated into numerous aspects of life since deep learning's success, with Google's incorporation of its neural machine translation system into Google Translate being a notable example. ML system comprises several aspects such as business requirements, UI, data stack, model development, monitoring, and updating logistics, and the necessary infrastructure.
+The book aims to provide a comprehensive view of ML system  instead of focusing on specific algorithms, offering a framework adaptable to changing algorithms.
+MLOps - set of tools to bring ML into production, while ML systems design takes a system approach to MLOps = considers an ML system holistically (as a whole)
+
+Section: When to Use ML
+
+ML is a method that learns complex patterns from existing data to make predictions on unseen data primarily in supervised learning scenarios. The effectiveness of ML depends on the presence of patterns in the data, the availability of existing data for training, the similarity between training data and unseen data, among others. ML shines especially in repetitive tasks, where the cost of incorrect predictions is low, and when implemented on a large scale, or if the patterns in data are continuously changing. 
+
+However, ML isn't always the best or most cost-effective solution, and alternatives should be considered. Ethical and bias considerations should also be factored in. If ML can’t solve your problem as a whole, breaking down the problem and applying ML to the components may be effective. Also what might not be cost-effective today might become so in the future.
+
+
+Subsection: ML Use Cases
+
+ML is being increasingly utilized in various applications, enhancing services and efficiency in both consumer and enterprise worlds. Consumer applications include recommender systems like those of Amazon and Netflix, predictive typing, photo editing, facial recognition for authentication, machine translation, smart home devices and at-home health monitoring systems.
+
+Enterprise ML is focusing more on accuracy rather than latency with common applications: resource allocation, price optimization, customer demand forecasting, customer acquisition, churn prediction, support ticket classification, and brand monitoring (sentiment analysis), healthcare sector (disease detection and diagnosis), fraud detection.
+
+
+Section: Understanding ML Systems
+
+
+Subsection: ML in Research Versus in Production
+
+1) In research, ML needs SOTA performance on benchmark datasets, whereas its production requirements vary according to different stakeholders.
+2) Computational priority in research is fast training and high throughput, but in production, it emphasizes fast inference and low latency.
+3) Data in research tends to be static, whereas it constantly shifts in production. 
+4) Research often overlooks aspects of fairness, which however, must be considered in a production environment.
+5) Similarly, interpretability, usually ignored in research, is a crucial requirement in production.
+
+
+Subsection: Different stakeholders and requirements
+
+In designing ML systems, stakeholders often pursue diverse, sometimes conflicting objectives, making model selection difficult. The complexity of a model which achieves the highest accuracy might not meet other requirements like speed or scalability. For instance, a mobile app that recommends restaurants to users involves interests ML engineers wanting more complex models, to sales desiring a focus on expensive restaurants, to the product team requiring low latency, and the managers aspiring to maximize profit margin. Thus, satisfying all these objectives requires developing different models for each purpose and merging their predictions.
+
+Model complexity must also be justified by the performance, as high complexity can lead to issues such as increased latency or scaling problems. Moreover, achieving top-notch research results doesn't necessarily mean they'll be successful in a production setting. Hence, understanding various stakeholder requirements and maintaining a balance is crucial in ML system design. Also, simpler models might be quite useful if the enhancements from complex ones are insignificant or unnoticeable to users.
+
+
+Subsection: Criticism of ML Leaderboards
+
+Criticism of ML leaderboards like Kaggle, ImageNet, and GLUE. One argument is that such competitions often simplify the process of building ML systems by already taking care of comprehensive steps. Another viewpoint is that, due to multiple teams testing on the same hold-out test set, some models might outperform others merely by chance. The text also highlights a disconnect between research and production, exemplified by an EMNLP 2020 paper. The paper claims that while benchmarks have accelerated advancements in natural language processing (NLP) by motivating the development of more accurate models, they often overlook other crucial aspects, such as compactness, fairness, and energy efficiency, which are imperative to practitioners.
+
+
+Subsection: Computational priorities
+
+Designing ML systems requires equal attention to model development and deployment/maintenance (high throughput vs. low latency). Latency - time from receiving query to producing result, throughput - number of queries processed within given time. Processing queries one by one leads to lower throughput (underutilizing hardware ==> increasing cost) but higher latency and vice versa when queries are processed in batches.
+
+In research, higher latency is acceptable if it means increased throughput, but in real-world deployments, low latency is critical - it can affect user engagement and business outcomes. Additionally, latency should be viewed as a distribution rather than a single number, with percentiles being a more insightful measurement to identify outliers and system performance requirements.
+
+
+Subsection: Data
+
+Research data sets are often clean, well-formatted and static in nature, facilitating model development and comparison of new architectures and techniques. Conversely, data in a production setting tends to be messy, biased, and constantly changing, with possible challenges such as sparsity, imbalances, incorrectly labeled data, privacy, and regulatory concerns. In addition, while research mostly employs historical data, real-world ML systems are likely to also handle data generated in real-time by users or systems.
+
+
+Subsection: Fairness
+
+There may be bias in ML systems with potential detrimental effect on fairness - biased algorithms can perpetually encode past prejudices, unfairly affecting people at scale, e.g. reinforcing socioeconomic, racial, or other biases in loan applications, recruitment, mortgage rates, predictive policing, and others. Minority groups can be disproportionately affected, as improving predictions for them might be costlier and thus often overlooked. In 2019, only 13% of large companies were took steps to address this, but attention to this issue is increasing.
+
+
+Subsection: Interpretability
+
+Interpretability in ML systems pays an essential role in building trust and improving models, but research incentives focus primarily on model performance. Even though interpretability is a necessity rather than an option in real-world applications, just 19% of large companies work to improve it in 2019.
+
+
+Subsection: Discussion
+
+Majority of ML jobs are in applying the technology to real-world applications rather than pure research. ML research has become more accessible through pre-built models, but the high cost of new models and the necessity for immediate business applications means most companies demand ML expertise in practical, production settings.
+
+
+Section: ML Systems Versus Traditional Software
+
+While some best practices in software engineering (SWE) can be applied to ML, the two disciplines have unique challenges. Unlike SWE, where code and data are separate, ML systems consist of code, data, and artifacts from both. These systems need to be adaptive due to rapidly changing data, which necessitates quick development and deployment cycles. Challenges in ML involve testing and versioning data, determining data value, and managing potential data poisoning attacks. The size of ML models, which are often large and require significant memory, presents another difficulty, especially for integration into production and edge devices. Models must run quickly enough to be useful, and monitoring and debugging in real-time is challenging due to their complexity. Despite these issues, progress is being made rapidly, as evidenced by the successful deployment of large, complex models like BERT, which was once considered impractical for real-world use.
+
+
+CHAPTER 2. INTRO TO ML SYSTEM DESIGN
+
+Section: Business and ML Objectives
+
+ML projects should align with business objectives. While data scientists may focus on ML metric improvements, businesses are instead concerned with how ML can enhance their business metrics or profitability. There needs to be a connection between the ML system's performance and overall business performance. Every increase or decrease in ML metrics must be mapped to a corresponding change in business metrics, such as ad revenue or number of active users.
+
+The ML system's effect on customer behavior and business metrics may not always align and may require experiments such as A/B testing to understand the relationship better. Even then, an ML model's outputs need to be assessed within the larger system in which they operate, as in a cybersecurity company's threat detection process.
+
+While ML adoption can bring significant returns, it's important to manage expectations realistically. Successful integration of ML, like Google's, often takes years of investment. Returns on ML investment strongly depend on the maturity of implementation, and businesses that have been using ML longer generally see greater returns. Any organization looking to implement ML should be prepared for the fact that positive results may not be immediate but can be significant over time.
+
+
+Section: Requirements for ML Systems
+
+Specific requirements for a ML system may differ depending on the use case, there are four key characteristics that most of these systems should possess:
+
+Reliability: ML system must function correctly by having the expected performance even in challenging circumstances (hardware or software malfunction or human error). It should be noted that “correctness” may be hard determine because ML systems fail silently (e.g. calling model.predict(), but the predictions are wrong).
+
+Scalability: ensures that ML systems can grow in complexity (logistic regression vs. 100-million- parameter neural network), traffic volume (number of daily prediction requests), ML model count (one model for one use case vs. multiple models for different use cases / customers). In every case ML systems must be able to scale in order to handle this growth. There are two ways of scaling: a) scaling out / horizontally - adding more equivalently functional components in parallel to spread out a load, and b) scaling up / vertically - making each component larger or faster to handle a greater load. Autoscaling is an indispensable feature in many cloud services. Besides resource scaling, handling growth is also artifact management. If you have multiple ML models, the monitoring and retraining aspect will need to be automated. You have to control the code generation to adequately reproduce models when needed.
+
+Maintainability: to ensure smooth collaboration, it's crucial to organize the workloads and infrastructure, allowing each contributor to use tools they are familiar with - documenting code, versioning code and data, making models reproducible, and cultivating a cooperative problem-solving environment.
+
+Adaptability: Often data distributions and business requirements change, and ML systems must be able to adapt by improving their performance and implementing updates without service interruption. ML systems need to be adaptable to evolving data distributions and business needs (data can change quickly).
+
+
+Section: Iterative Process
+
+Designing and implementing a ML system is a dynamic, iterative process requiring continuous monitoring and updates after deployment. It often involves back-and-forth stages such as data collection, model training, error analysis, data re-labeling, and model re-training. A typical workflow could involve optimizing specific metrics, addressing error-induced issues, updating obsolete models with recent data, and adjusting models to enhance performance against business goals. This cyclical development process involves steps like project scoping, data engineering, ML model development, deployment, monitoring, continuous learning, and business analysis. The perspective on this process can vary depending on the role of the individual such as a data scientist, an ML engineer, an ML platform engineer, or a DevOps engineer.
+
+
+Section: Framing ML Problems
+
+It is important to frame the ML problem correctly to avoid future complications and rework. For example:
+a) speed up customer service by routing and processing of customer requests to the appropriate departments (accounting, inventory, HR, and IT) => ML classification with input as customer's request and output the department; objective function minimizes the discrepancy between the predicted department and the actual department;
+b) predict the next app a phone user might use - if framing as multiclass classif., then method becomes challenging when a new app is added because need to retrain. Instead, regression task, where the input includes the features of the user, the environment, and each app - eliminates the need to retrain as new inputs = new app's features
+
+
+Subsection: Types of ML Tasks
+
+
+Subsection: Classification versus regression
+
+Classification - categorizing items into groups. Regression - predicting a continuous value (house prices). Regression can become classification if we introduce threshold(s). Similarly, spam classification can become regression by predicting values between 0 and 1.
+
+* Binary - two classes.
+* Multiclass - multiple classes, can be high cardinality (large number of classes) ==> effective solution can be hierarchical classification, where one classifier first categorizes into large groups, and subsequent classifiers categorize into subgroups
+* Multilabel classification - one example can belong to multiple classes; two ways to solve: a) an example with 2 labels can represented as [0, 1, 1, 0], b) breaking down the problem into multiple binary classifications. Multilabel classif. challenging => disagreements among annotators + issues in extracting predictions from raw probability (varying number of classes).
+
+
+Section: Objective Functions
+
+Objective function / loss function guides learning by minimizing loss caused by incorrect predictions. In supervised ML, the loss is calculated by comparing the model's predictions with the actual labels using measurements like RMSE, MAE, logistic loss, or cross entropy.
+
+
+Subsection: Decoupling objectives
+
+Problem arise when objectives conflict. Example: newsfeed ranking to maximize user engagement. BUT we also need to mitigate ethical issues like filtering spam, NSFW content, and misinformation. We can use combined loss where both quality and engagement losses are combined into a single model: alpha*loss1 + beta*loss2 - but it has to be retrained each time the objectives' weights change (alpha and beta). In the decoupling approach, separate models are used for each objective, allowing for changes to the weights without retraining the models - maintenance advantages, as different objectives often require different update frequencies.
+
+
+Section: Mind Versus Data
+
+The text addresses the debate in the ML field between prioritizing data - emphasizes the importance of quality and quantity of data to the success of ML systems, arguing that more computation and data can outperform intricate designs OR or algorithm design - criticizes heavy reliance on data, pointing out its limitations and urging for more intelligent designs; larger amount of data doesn't always lead to better performance. Also having a lot of data is different from having infinite data.
+
+
+CHAPTER 3. DATA ENGINEERING FUNDAMENTALS
+
+Mastering the collection, processing, storage, retrieval, and processing of exponentially growing data volumes is vital. Effectively sampling and generating labels for creating training data is important. For data engineering, recommend Martin Kleppmann's "Designing Data-Intensive Applications". Historical data housed in storage engines vs. real-time streaming data with unique processing requirements. Data engineering fundamentals, data sources, data storage formats, data models. Databases for transactional and analytical processing. Need robust data transfer modes because data is often utilized across multiple processes and services.
+
+
+Data Sources
+* User input data: text, images, and videos requires checking or rapid processing to avoid issues like wrong entries or format errors.
+* System-generated data: logs and model predictions, user behaviors (subject to privacy regulations). May not require immediate processing, but rapid management can be beneficial to detect abnormalities. Services like Logstash, Datadog, Logz.io use ML models to streamline and interpret large-scale logs.
+* Third-party data (used by enterprises): first-party, second-party, and third-party. Third-party data from vendors after cleaning and processing aids recommender systems, but growing privacy concerns lead to focus on first-party data.
+
+
+Section: Data Formats
+
+Data serialization - converting data into a storable or transmittable format. There a variety of serialization formats differing in human-readability, text / binary basis, and access patterns: JSON, CSV, Parquet, Avro, Protobuf, Pickle. When deciding on data storing format, consider future data usage, storage costs, and data compatibility across diverse hardware.
+
+* JSON (JavaScript Object Notation, language-independent) - human-readable key-value pairs. Issue - a) difficulty of altering a committed schema, b) being text files, JSON files consume substantial space.
+
+* CSV is a row-major format (consecutive elements in a row are next to each other) - quicker access to rows. More efficient for frequent write operations when adding new data examples (rows). Known for poor serialization of non-text char ==> potential loss of precision.
+
+* Parquet is a column-major format (consecutive elements in a column next to each other) - faster access to columns. More suitable for column-based read operations, i.e. for datasets w/large number of features - flexible and efficient access to specific features.
+
+* NumPy vs. pandas: pandas operates on a column-major format, inspired by R's Data Frame, while in NumPy the default order is row-major - iterating a DataFrame by column takes 0.07 s, while by row - 2.41 s. Converting DataFrame to NumPy ndarray significantly accelerates row-access times.
+
+
+* Text vs. binary: binary files (parquet) are more compact and efficient than text files (CSV, JSON). Number 1,000,000 - 7 bytes in text OR 4 bytes in binary file. Binary files = raw bytes, an app must understand how to read it. AWS recommends Parquet for speed and lesser storage consumption: 2x faster to unload and 6x less storage than text.
+
+
+Section: Data Models
+
+
+Relational model: data is arranged into relations = sets of tuples, visually represented as tables (promotes CSV or Parquet file formats). Data within relations is often normalized through the first (1NF), second (2NF) normal form, etc - reduces data redundancy and enhances data integrity by eliminating duplicates and segregating information across tables. Changes to a particular piece of data require updates in specific relations, making operator tasks more manageable.
+
+Data spread across multiple relations is a downside of normalization, as joining can be complex for larger tables. Data retrieval from these requires a query language like SQL. Despite its inspiration from the relational model, the SQL data model allows row duplicates (not found in true relational models). SQL is declarative, meaning the user specifies desired outputs while the steps needed to achieve these are determined by the system (Python is imperative provides direction about steps to achieve output). SQL can potentially solve any computational problem (making it Turing-complete), but practical application can present challenges such as lengthy, complex queries. The implementation of a query is determined by query optimizers, which find the fastest execution method after analyzing all possibilities.
+
+From Declarative Data Systems to Declarative ML Systems - declare a feature’s schema and a task, and the system builds, trains, tunes the best model (no code writing).
+* Ludwig by Uber - user specifies model structure: # layers and hidden units.
+* H2O AutoML - user provides data and # models to experiment with, system returns top-performer.
+Declarative ML struggles in production because it focuses on model development which is easier than feature engineering, data processing, continual learning, and data shift detection.
+
+
+Section: NoSQL
+* Document model - data is self-contained with limited inter-document relationship. Document = JSON, XML, or BSON docs; a doc = a row + collection of docs = a table in a RDBMS, but docs can have different schemas (schemaless system) ==> more flexibility. But some structure may be assume during data reading (not data writing). Also, better data locality / retrieval - all related info stored in a single doc. Drawback - inefficiency when executing joins across docs. As such, many database systems such as PostgreSQL and MySQL support both doc and RDBMS data models.
+* Graph model - apps where relationships between data items are significant. Graph DB consist of nodes and edges representing data items and their relationships - prioritize relationships. Compared to doc DB - faster data retrieval based on relationships. Example: social network - you easily find everyone born in the USA by traversing from the USA node (much more difficult to perform using RDBMS or doc DB) ==> it is importance to choose right data model for your app as it greatly simplifies data queries.
+
+
+Structured Versus Unstructured Data
+* Data warehouses store structured processed data ready for use - has a schema = inflexible, easy to search and analyze, but schema changes can lead to issues - may be too restrictive as business requirements evolve.
+* Data lakes store unstructured raw data prior to processing, handle data from any source (text, numbers, dates, images, audio, etc. ) and are not perturbed by schema changes, regardless of type and format - can be converted into bytestrings and flexibly stored, might still contain intrinsic patterns that can be extracted
+
+
+Section: Data Storage Engines and Processing
+When designing ML systems, it is important to understanding data formats, data models, and different types of databases. DBs are generally optimized for either transactional and analytical processing.
+* Transactional row-major DBs are designed for online transaction processing (OLTP) - low latency, high availability, follow ACID principles: Atomicity, Consistency, Isolation, and Durability in each transaction, but ACID isn't always necessary and may be too restrictive.
+* DBs for online analytical processing (OLAP) are designed to handle analytical questions that require information aggregation due to column-based data aggregation
+* Terms OLTP and OLAP have become outdated: 1) technology has evolved, now no need for two separate DBs; 2) modern systems decouple data storage from data processing - more optimized processing, 3) term 'online' has acquired various meanings referring to different stages of data availability and the extent of human intervention - online, nearline, and offline processing.
+
+
+Section: ETL: Extract, Transform, and Load
+
+Extract, Transform, Load (ETL) process: E = data extracted from various sources, validated (rejected if doesn't meet predefined requirements), T: joining data from different sources, cleaning, standardizing value ranges, deduplication and aggregation, L = load transformed data into a targeted location (DB or data warehouse). This becomes challenging as the volume and nature of data evolve.
+
+Alternative - Extract, Load, Transform (ELT) process: raw data is stored first and processed later ==> speeding up data storage (arrival) but making subsequent data search in massive set of raw data less efficient. As businesses shift towards cloud-based operations and standardization of data structures, hybrid solutions are offered by vendors like Databricks and Snowflake combining the flexibility of data lakes and the management aspects of data warehouses.
+
+
+Section: Three types of dataflow
+
+* Through DB: data exchange between 2+ ML processes using databases. Good method, but mey be inefficient due to a) shared access to same DB is challenging when processes belong to different entities, b) DB read/write operations can be slow and unsuitable for apps w/stringent latency requirements, such as consumer-facing applications.
+
+* Through Services: passing data between processes in ML systems using a microservice-oriented architecture, where processes communicate through requests - a request-driven model. Application is structured as separate services. Popular techniques of data passing: a) REST (representational state transfer) - designed for network requests, predominantly used for public APIs, and b) RPC (remote procedure call) - similar to a local function or method call, used for intracompany services. REST is not synonymous with HTTP - the latter = an implementation of the former.
+
+
+* Through Real-Time Transport: request-driven data passing can become a bottleneck in large systems with many services, as it requires synchronous communication between the services. To mitigate this, a 'broker' is proposed - each service communicates with the broker instead of with each other, greatly simplifying the data exchange. Technically a DB can serve as a broker, but in-memory storage is a faster alternative. Data broadcast to a real-time transport (a type of in-memory storage) is called an event, hence the architecture is called event-driven.
+
+Real-time transports can be divided into two types: publish-subscribe (pubsub) model and message queue model. In the pubsub model, any service can publish to different topics, and any service that subscribes can read from these topics. The data only remains in the real-time transport for a fixed time period. In a message queue model, the event (also called a message) has intended consumers, and the queue ensures that the message reaches them. Examples of pubsub solutions are Apache Kafka and Amazon Kinesis, while message queues include Apache RocketMQ and RabbitMQ.
+
+
+Subsection: Batch Processing Versus Stream Processing
+
+Batch processing, using systems like MapReduce and Spark, is typically used for historical data stored in databases, data lakes, or data warehouses, which is processed in batch jobs with longer intervals. On the other hand, stream processing is used for real-time data in systems like Apache Kafka and Amazon Kinesis = stream processing, ad hoc or shorter intervals, provides low latency, with Apache Flink and other technologies that can efficiently process streaming data.
+
+Batch processing - for features that change less frequently (batch features), while stream processing - for fast-changing features (streaming features). ML systems may integrate both for optimal performance. Apache Flink, KSQL, and Spark Streaming are recommended for advanced stream processing.
+
+
+CHAPTER 4. TRAINING DATA
+
+
+Section: Sampling
+
+Sampling - vital ML aspect, but often unnoticed. Used when lack of access to all real-world data OR infeasibility to process all data (time or resource constraints). Understanding sampling reduces sampling biases and enhances data efficiency.
+
+* Nonprobability Sampling
+Selecting data without probability criteria: a) convenience sampling (choosing data based on availability), b) snowball sampling (choosing future samples based on existing ones), c) judgment sampling (expert-selected samples), d) quota sampling (choosing samples according to specific data quotas without randomization). However, these methods are prone to selection biases and might not represent real-world data effectively (favoring convenience over representation). Nonprobability sampling can be useful for initial data gathering in starting a project, but more reliable models require probability-based sampling.
+
+* Simple Random Sampling
+Selecting samples from a population with equal probabilities. Easy to implement, but may fail to include rare categories (as if such categories didn't exist).
+
+* Stratified Sampling
+Avoiding the pitfalls of simple random sampling - dividing the data into relevant groups/classes (strata) and sampling from each group separately - samples from rare classes are included. Limitation: can't use when it's impossible to divide samples into groups (especially in multilabel setting).
+
+* Weighted Sampling
+Each sample is assigned a weight determining its selection probability. Helps reflect domain expertise or to adjust for discrepancies between sample distribution and true data distribution. Weighted sampling can be executed in Python using the 'random.choices' function. Related ML concept - sample weights which assign importance to training samples: higher weights influence the loss function more and change decision boundaries significantly.
+
+* Reservoir Sampling
+Handles streaming data (tweets) when storing all data isn't feasible. Goal - maintain equal probability for each tweet while allowing the algo to stop at any point and still maintain correct sampling probability. Process: a) create a "reservoir" (array) of first 'k' elements, b) then after 'n'th element comes in, a random number 'i' is generates. If 'i' in range(1,'k'), replace the ith element 'n'th element; else do nothing. Each sample has an equal chance of being selected => suitable representation of data
+
+* Importance Sampling
+Sampling from an accessible distribution when the desired distribution is difficult to sample from. The accessible distribution (aka proposal or importance distribution) Q(x) is used to sample 'x' from it, instead of a challenging distribution, P(x), and then the sample is weighted by ratio of P(x) to Q(x). This method assumes that the proposal distribution is always greater than zero when the desired one is not zero. Used in policy-based reinforcement learning to update policies (reweight total rewards based on old policy to estimate new policy, if new policy similar to the old one) - helps avoid costly calculations of total rewards.
+
+
+Section: Labeling
+
+* Hand Labels
+a) can be expensive, esp. when subject matter expertise is needed;
+b) poses data privacy issues if the data is confidential;
+c) time-consuming process - reduces iteration speed => model less adaptable to changes in task or in data. To update model - data must be re-labeled.
+
+* Label multiplicity
+Label ambiguity and variability of annotations are challenging - three different annotators can identified varying entities => differing labels and model outputs. Annotator disagreement is a common, esp. if domain expertise is required. To minimize - incorporate clear problem definition into the annotators’ training / guidelines.
+
+* Data lineage
+Data from various unvetted sources can be detrimental to ML models. Model trained on high-quality data deteriorates when trained with additional, lower-quality data. To avoid - trace origin and quality of each data sample. Model faults may be traced back to incorrect data labels, and not issues with model itself.
+
+
+Section: Natural Labels (system-generated)
+
+63% of companies work with tasks involving natural labels - easier and less expensive. Feedback from these tasks can lead to implicit labels (derived from the absence of positive interaction) or explicit labels (where users explicitly demonstrate their security through ratings or downvotes).
+Examples: Google Maps' time of arrival estimation and stock price prediction, recommender systems (user's interaction with items provides feedback), predicting ad click-through rates or user ratings can be framed as recommendation tasks using behavioral labels derived from user activities. Even tasks without inherent natural labels can incorporate systems for community feedback (providing the correct translation for Google Translate).
+
+* Different Types of User Feedback
+Diversity of user feedback differs in terms of volume, signal strength, and feedback loop length. User interactions like clicking on a product, adding to cart, purchasing, rating, and reviewing provide different feedback types. Faster and more frequent actions like clicking reveal higher feedback volume, while purchasing indicates a stronger signal of user preference. While building a product recommendation system, some companies optimize for clicks due to a higher volume of feedback, while others focus on purchases for a stronger, business metric-related signal. The type of feedback to optimize depends on the specific use case, and requires discussions among stakeholders
+
+* Feedback loop length
+Feedback loop length can be minutes - Amazon or Twitter recommender systems, or hours / days / when recommending long content or clothing items or in fraud detection. Choosing the right window length is crucial: trade-off between accuracy and speed. Short length - quick issue resolution, but prematurely labeling a recommendation as bad. Longer length may underestimate performance metrics like click-through rates. Labels with long feedback loop are useful for long-term performance reporting but may fail to address model issues promptly.
+
+
+Section: Handling the Lack of Labels
+
+* Weak supervision
+Effective initial method to explore ML potential without significant investment in hand labeling. Uses human-derived domain specific heuristics (maybe by subject matter experts), as in Snorkel's labeling functions (LFs) based on keywords, regex, DB lookup, outputs of other models - then labels can be combined, denoised, and reweighted.
+A small number of hand labels are recommended to assist in assessing the accuracy of LFs. LFs can be created using a small subset of cleared data and then applied to the rest. Otherwise called programmatic labeling. Advantage of LFs: cost-effectiveness, privacy maintenance, speed, and adaptiveness. Even if heuristics are not applicable to all data, the ML model can make predictions for samples that are not covered by LFs.
+
+* Semi-supervision
+Uses a small set of initial labels to generate more labels.
+a) self-training - model trained on existing data, makes predictions for unlabeled samples; if preds have high raw probability scores, they are added to training set.
+b) perturbation-based methods assume that minor changes to a sample shouldn't alter its label - perturbations are applied to create new instances having same labels. Sometimes, the performance of semi-supervised learning matches that of supervised learning. This approach is especially useful with limited training labels, but careful consideration must be given to the evaluation strategy - use a large enough evaluation set to select the best model.
+
+* Transfer learning
+Model, trained for a specific task with abundant data (LLM) is fine-tuned to tackle a new downstream task, e.g. sentiment analysis, intent detection, or Q&A. Used for tasks with little labeled data.
+
+* Active learning
+Allows the model to select which data samples to learn from, leading to possibly better accuracy with less training labels required. Achieved by identifying and labeling the most informative samples according to certain metrics or heuristics, e.g. uncertainty measurement, which proposes to label samples that the model is least confident about to improve the decision boundary. Another common heuristic - query-by-committee which utilizes multiple candidate models to vote on which samples to label next based on uncertainty of prediction. Other heuristics: select samples that offer the highest gradient updates or those that reduce loss the most. Data can be synthesized or real-world data. Active learning with real-time data - quicker adaptation to changing environments.
+
+
+Section: Class Imbalance
+
+= Significant discrepancy in the distribution of samples across classes in the training data. ML, specifically deep learning, typically performs better with balanced data. In imbalanced situations, three issues arise. Firstly, the model may struggle to learn from insufficient instances of minority classes, even assuming those rare classes don't exist if not seen in the training set. Secondly, the model may latch onto non-optimal solutions such as exploiting simple heuristics instead of learning underlying patterns (predict majority classes most of the time), making gradient descent algorithms less effective. Thirdly, imbalanced data can result in asymmetric error costs, with the cost of misclassification potentially being much higher for minority classes. Imbalance is the norm in fraud detection, churn prediction, disease screening, and resume screening, but could also be caused by biases during the sampling process or labeling errors.
+
+For an extensive study, read "Survey on Deep Learning with Class Imbalance" by Johnson and Khoshgoftaar, 2019. Binary classification with imbalances is easier to deal with than multiclass problems. Deeper neural networks perform better with imbalanced data. Three methods to handle class imbalance: correct metrics, data-level methods (modifying data distribution), and algorithm-level methods (making the learning method more robust to imbalance).
+
+* Relevant evaluation metrics
+
+Selecting the appropriate evaluation metrics is crucial. Accuracy and error rate treat all classes equally => overdominance of the majority class. Metrics that take specific classes into account, such as per-class accuracy, F1 score, precision, and recall, which depend on correct positive class predictions, are recommended for more accurate representation of a model's performance.
+
+Precision, Recall, and F1: inverse count of true positives, true negatives, false positives, and false negatives. Asymmetrical metrics that can change depending on which class is considered positive. Tuning the probability threshold can increase the true positive rate (recall), while reducing the false positive rate. ROC curve describes how a model's performance changes according to different thresholds. Area Under the Curve (AUC) of the ROC curve = measure of model's performance. However, like F1 and recall, ROC curve focuses on positive class and the model's performance on negative class. Therefore, Precision-Recall Curve is offered as a more comprehensive view of performance with heavy class imbalance.
+
+
+* Data-level methods: resampling
+
+Oversampling adds more instances from the minority classes while undersampling removes instances of the majority classes. Techniques like Tomek links for undersampling and SMOTE (synthetic minority oversampling technique) are effective for low-dimensional data, but can potentially make the model less robust or cause overfitting + can be computationally expensive with high-dimensional data. Crucial not to evaluate model on resampled data - causes overfitting.
+Risks: a) undersampling = loss of data, b) oversampling may overfit. Mitigating risks: 1) two-phase learning (training model on resampled data, then fine-tuning on original data), 2) dynamic sampling (oversampling low-performing classes and undersampling high-performing classes throughout the training process).
+
+
+* Algorithm-level methods: adjusting loss function
+
+1) Cost-sensitive learning - different costs for the misclassification of different classes. Cost matrix (Cij) - cost if a certain class i is classified as class j, zero cost being assigned to a correct classification (i=j), and higher cost to a misclassification. Customizable: cost can be doubled if POSITIVE examples are misclassified as NEGATIVE. Limitation - need to manually define the cost matrix, which can vary for different tasks at different scales.
+
+2) Class-balanced loss
+Penalize model for incorrect predictions on minority classes; simplest form - weight of each class is inversely proportional to # samples. Loss functions such as cross entropy can be used to account for this weight modification. An advanced version of this approach could consider the overlap among samples through class-balanced loss based on the effective number of samples.
+
+3) Focal loss
+Assigns higher weights to samples that are difficult to classify correctly, but defining the cost matrix manually can be problematic as it varies with tasks and scales. Class-Balanced Loss - weight of class = inversely proportional to the # samples. A more advanced version factors in the overlap among samples. Ensemble techniques can help (discussed later).
+
+
+Section: Data Augmentation
+Data augmentation - increase training data when it's limited OR model robustness against noise and adversarial attacks even when the data is ample. It's now a standard in CV and is expanding into NLP; images are manipulated differently than text.
+
+* Label-Preserving Transformations
+In computer vision, data augmentation involves randomly modifying an image (e.g., cropping, flipping, rotating, inverting, erasing parts) while keeping its label the same. Popular ML frameworks such as PyTorch, TensorFlow, and Keras support image augmentation. In NLP, data augmentation may include replacing words with similar ones without changing the sentence's meaning or sentiment using synonymous dictionary or similar embeddings. These techniques often double or triple the amount of training data and are computationally efficient.
+
+* Perturbation
+Neural networks for CV are sensitive to slight perturbations or noise in the data, which can cause misclassifications. Deliberate use of deceptive data = adversarial attacks. Adversarial augmentation can help improve a model's performance by recognizing its weak points through adding random noisy samples to training data. 'DeepFool' algorithm identifies the minimum possible noise injection required to misclassify. This method is less common in NLP. However, models like BERT have used perturbation to enhance their robustness, by randomly replacing words in sentences to improve model performance. Perturbations can thus be employed not only to enhance a model's performance but also to evaluate it.
+
+* Data Synthesis
+Data collection can be costly, slow, and present privacy issues ==> there are different ways to synthesize training data:
+1. Using templates in NLP conversational AI: "Find me a [CUISINE] restaurant..." ==> various cuisines, numbers, and location details to generate thousands of training queries.
+2. CV - combining existing examples with discrete labels to generate continuous ones, an approach called 'mixup'. This has been shown to enhance model's generalization and improve robustness to adversarial examples.
+3. Employing neural networks for synthesizing training data, though it's in research stages and not yet popular in production environments. For example, CycleGAN helped significantly in improvement of computed tomography segmentation tasks.
+4. Read 'A Survey on Image Data Augmentation for Deep Learning' (Shorten and Khoshgoftaar 2019) for CV.
+
+
+CHAPTER 5. FEATURE ENGINEERING
+Domain knowledge may be necessary; the process is usually iterative.
+
+
+Section: Learned Features Versus Engineered Features
+
+N-grams featurize text into numerical vectors using n-gram frequencies, often utilizing lemmatization, removal of stopwords and punctuation. Deep Learning automates feature engineering (text and images). Despite this, not all features can be learned automatically => many apps require features engineering. 
+
+Successful ML models require diverse data (e.g. spam classifier), and for accurate prediction additional features like upvote/downvote ratio, activity history, and thread popularity may. Feature engineering is largely dependent on the complexity of the task and domain-specific knowledge ranging from millions of features for TikTok, to specialized knowledge in banking to predict fraud.
+
+
+Section: Common Feature Engineering Operations
+
+
+Subsection: Handling Missing Values
+
+Three types of missing values
+a) Missing Not At Random (MNAR) - values are missing due to the nature of the values themselves;
+b) Missing At Random (MAR) - values are missing due to another observed variable (people of gender A didn't disclose their age => age missing);
+c) Missing Completely At Random (MCAR) - values are missing randomly without any pattern
+Dealing with missing values - impute or delete:
+
+* Deletion
+Often preferred due to simplicity, but leads to loss of crucial info / significant insights or creates biases => reducing model's accuracy. Col deletion - removing a variable (may be crucial). Row deletion - can be viable for missing completely at random (MCAR) if only a small fraction of data. Sometimes, missing values can carry info, and their removal introduces bias.
+
+* Imputation
+Filling the missing values with certain "defaults" or statistical measures like mean, median, or mode => can lead to issues if values are outside the range causing faulty predictions. Avoid using possible values to fill missing data - can blur genuine attributes. No missing data handling technique is perfect - both deletion and imputation carry risks, either losing significant information, increasing biases, producing noisy data, or causing data leakage. However, varied techniques can be combined or used in sequence to mitigate these issues.
+
+
+Subsection: Scaling
+
+ML models assign more importance to features with larger values => scaling converts variables with different value ranges (Age and Income) into a similar arbitrary range ([0, 1] or [-1, 1]) or normalizes them to have zero mean and unit variance (standardization). Skewed distribution can be mitigated through log transformation (yields performance gains, but doesn't work in all cases). Remember, scaling can be a potential source of data leakage (fit on train only, transform on both), and there is a need to frequently recalibrate models to adapt to significant changes in new data.
+
+
+Subsection: Discretization
+
+* Convert continuous features (income) into discrete one by quantization or binning or creating 'buckets' to simplify learning. Example: divide income into three income groups - lower, middle, and upper.
+* Convert discrete features (age) into groups like 'Less than 18' or 'Between 22 and 30'.
+* Inherent disadvantage - introducing discontinuities at the boundary points of categories => affecting model's performance. Choosing appropriate boundaries requires methodologies like plotting histograms, applying common sense, leveraging basic quantiles or relying on SMEs. The efficacy of discretization varies in different scenarios and its utility is debated.
+
+
+Subsection: Encoding Categorical Features
+
+The text discusses handling dynamic categorical features in ML systems, using the example of changing product brands on e-commerce platforms like Amazon. This poses a challenge when unseen brands during training fail the production model. A temporary solution is categorizing new brands as 'UNKNOWN' or encoding only the top 99% of popular brands. However, this impacts the recommendation of new brands adversely. 
+
+A notable workaround to this problem is the 'hashing trick', where each category is hashed to a fixed number of encoded values thus handling categories the model hasn't seen before. The potential issue of collisions leading to loss in performance is cited as minimal. This method, although deemed 'hacky' by academics, has gained widespread adoption in the industry due to its effectiveness - it is part of frameworks like scikit-learn, TensorFlow, and gensim and is particularly useful in continual learning situations.
+
+
+Subsection: Feature Crossing
+
+Combining multiple features to generate a new one to model nonlinear relationships between features - beneficial for models struggling w/nonlinear relationships: linear regression, logistic regression, tree-based models. Neural networks can also benefit from feature crossing - helps them learn nonlinear relationships faster. DeepFM and xDeepFM are examples of models that successfully utilize explicit feature interactions. However, feature crossing can also expand your feature space drastically and potentially lead to overfitting (the more feats, the more the chance of overfitting)
+
+
+Subsection: Discrete and Continuous Positional Embeddings
+
+* Introduced in "Attention Is All You Need" (Vaswani et al. 2017), primary data engineering technique for CV and NLP tasks. Unlike RNNs where word order is implicitly input, transformer models that process words in parallel require explicit direction as to word positions - informs the model of words order.
+* 2 types - learned and fixed position embeddings. Learned ones are typically summed w/word embeddings (if same size). Example: "food" at position 0 would be the sum of embedding for "food" and embedding for position 0 - pos embeddings here are learned and variable as model weights are updated.
+* Fixed ones define each position as vector using a func (sine for even indices and cosine for odd ones) - handle discrete and continuous positions, making it applicable for 3D object representation, where position = 3D coordinates. Fourier features, which fixed positional embedding is a part of, enhance model performance in tasks where coordinates or positions are inputs.
+
+
+Section: Data Leakage
+
+Data leakage is when crucial predictive info becomes part of feats used for making predictions (on test set) and is not available during inference. Cautionary tale from a 2020 Kaggle competition - winning teams exploited data leakage of test labels.
+
+
+Subsection: Common Causes for Data Leakage
+
+* Splitting time-correlated data randomly instead of by time - info about future leaks into training data; can be non-obvious - making song recommendation based on general music trend of the day. If you have data for 5 weeks, use first four for training, and remainder for a random validation vs. test split.
+
+* Scaling before splitting - use of global statistics about the mean and variance of test set into training process. Such info is absent in prod - model's performance deteriorates. Split data even prior to EDA to avoid unintentionally acquiring test set info.
+
+* Filling in missing data w/statistics from test set - calculate the mean or median for filling in missing data only on the training set; comparable to the scaling leakage.
+
+* Deduplication not done before the train-test split - similar samples appear in training and validation/test sets - compromises learning and testing phases. Notable examples include popular datasets like CIFAR-10 and CIFAR-100, and critical apps like detecting COVID-19. Also, do oversampling after the split.
+
+* Group leakage - examples with strongly correlated labels are divided into different splits (train and test). Examples: same patient's CT scans taken a week apart or photos of same object taken milliseconds apart. Avoiding requires a deep understanding of data generation
+
+* Leakage from data generation - differential CT scan procedures across hospitals => need to deeply understanding data collection methods; track data sources, understand collection and processing methods, and normalize data to ensure consistency in its statistical properties. Example: normalize images from different CT scan machines to the same resolution. Include SMEs in the ML design process for valuable insights on data collection and usage.
+
+
+Subsection: Detecting Data Leakage
+
+* Data leakage can occur at various stages: data generation, collection, sampling, splitting, processing, and feature engineering - requires persistent monitoring.
+* To detect it - evaluate the predictive power of each feature vs. the target var - high correlation can imply leakage, need to investigate the feature's generation and the validity of the correlation. Note that individual features might be free from leakage though a combination might result in leakage.
+* Ablation studies are beneficial to ascertain the importance of a feature - a significant performance deterioration upon removing a feature could suggest its criticality or the presence of leakage. With numerous features, run ablation studies on suspect subsets.
+* When adding new features, observe their effect on improving model performance since such could indicate presence of leaked label information. Always be cautious to prevent future info leakage from test set into raining set.
+
+
+Section: Engineering Good Features
+
+More features can enhance model performance, but may also invite issues like data leakage or overfitting, can increase memory to serve the model (costlier machines), can increase inference latency, esp. in online predictions. Unnecessary feats = technical debts requiring updates when data pipeline changes.
+
+Regularization may nullify non-contributing features + their removal can help models learn faster, prioritizing beneficial features. Removed features can still be stored for possible future use, but implement feature definition management - not all feature stores manage feature definitions.
+
+
+Subsection: Feature Importance
+
+* Trees have built-in feature importance functions (XGBoost).
+* So do linear models (coefficients).
+* Model-agnostic methods such as SHAP (SHapley Additive exPlanations) measure contribution of each feature to model's specific prediction.
+Allow one understand model's predictions by assessing the consequences of removing certain features + enhance model's interpretability (demos internal functioning)
+
+Often a few features account for large part of model's feature importance. Example Facebook's ads model - top 10 features = half of model's feature importance, while the last 300 contributed less than 1%.
+
+
+Subsection: Feature Generalization
+
+ML model is to make predictions on unseen data - the generalization ability of features varies: some (user identifiers) have useful predictive properties whereas others (specific comment identifiers) are not generalizable. Evaluation of feature generalization is less standardized than feature importance and requires intuition, expertise, and statistical knowledge. Consider these:
+
+* High feature coverage (percentage of samples this feature appears in) indicates a potentially generalizable feature. However, features that appear rarely can also be meaningful. Feature coverage can vary within data slices and over time. Differences in feature coverage between train and test datasets can indicate misaligned data distributions and potential data leakage.
+* Distribution of feat values is crucial when feature values in the train data don’t overlap with those in the test data, negatively impacting the model’s performance.
+
+Choice of feats requires balancing between generalization and specificity. Overly generic features may lose vital information contained within the specificity of less general ones. Example: defining rush hour as a separate feat => loss of nuanced information contained within specific hours of the day.
+
+
+CHAPTER 6. MODEL DEVELOPMENT AND OFFLINE EVALUATION
+
+
+Section: Model Development and Training
+
+
+Subsection: Evaluating ML Models
+
+Selection of right ML algo must strike balance between performance, resource utilization, and interpretability. Factors to consider: nature of ML problem, model's performance metrics, data volume, compute and time required for training, inference latency, model's interpretability. Classic ML and neural networks are often used in tandem, sometimes within ensemble models or to generate embeddings for each other. DL has not replaced classical ML, gradient-boosted trees are widespread.
+
+
+Section: Six tips for model selection
+
+* Avoid the state-of-the-art trap.
+Some lean towards SOTA models which may not be the most suitable, cost-effective, or performant on unique data sets - need to identify solutions that effectively solve the problem and could be simpler and cheaper.
+
+* Start with the simplest models.
+Simple is better than complex - aids in deployment, understanding, debugging and establishing baselines for complex models. But simpler doesn't mean least effort. Try not to start with BERT - less effort, but difficult to improve upon. Start with a simpler model - more scope for improvements to validate the utility over complex, low-effort models - then compare their performance with complex ones to determine the best strategy for your problem.
+
+* Avoid human biases in selecting models.
+Example: two different ML models, a gradient-boosted tree and BERT, were evaluated at different times and by different engineers, resulting in the opposite performance assessments => personal bias and unequal time spent testing each model could have contributed to these inconsistent results. Maintain equivalent experimental conditions - equal and comprehensive testing for each model. Model performance depends on the task, training/test data, and HPs => no model architecture is superior.
+
+* Evaluate good performance now versus good performance later.
+Best ML model now may not remain best in the future, as data volumes and context change. Learning curves can estimate potential changes in a model's performance with increased data (don't provide exact figures but give an idea of potential improvement). Consider a model's potential for and ease of future improvements. Example: simple NN was initially outperformed by collaborative filtering model, but eventually surpassed it in performance due to its ability to learn from new data.
+
+* Evaluate trade-offs
+a) Balance between false positives and false negatives - decreasing one may increase the other. The choice depends on task: fewer false positives are preferred in security operations like fingerprint unlocking, while fewer false negatives are desired for COVID-19 screening.
+b) Trade-off between compute requirement and accuracy, as a more complex model may deliver higher accuracy but require more powerful hardware.
+c) Trade-off between model complexity and interpretability.
+
+* Understand model’s assumptions
+a) Prediction Assumption, which views Y as predictable based on X;
+b) Independent and Identically Distributed (IID) data, where examples are assumed to be independently drawn from the same joint distribution;
+c) Smoothness, believing a set of functions can transform similar inputs into similar outputs;
+d) Tractability, assuming the probability compute between input X and its latent representation Z is achievable;
+e) Boundaries, where a linear classifier presumes linear decision boundaries;
+f) Conditional Independence, where attribute values are assumed independent within a class in a naive Bayes classifier;
+g) Normally Distributed, where many statistical methods presume data fit a normal distribution
+
+
+Section: Ensembles
+
+Ensembling - multiple models (base learners) are used instead of a single one to improve prediction performance. The final prediction is based on [the majority] vote. 20 of the top 22 solutions in Kaggle competitions in 2021 and in SQuAD 2.0 in January 2022 used ensembles. This technique is less favored in production due to complexity in deployment and maintenance, it's used where a small performance boost can lead to significant financial gain such as in predicting click-through rates for ads.
+
+The efficiency of ensembling is explained using an example of three email spam classifiers, each with 70% accuracy; combined in an ensemble, their accuracy increases to 78.4%. The less correlated the models in an ensemble are, the better the ensemble’s performance. There are three methods to create an ensemble: bagging, boosting, and stacking. Ensemble methods along with resampling are found to be beneficial for imbalanced datasets.
+
+* Bagging
+Bagging (bootstrap aggregating) prevents overfitting and enhances accuracy. This involves creating multiple datasets (bootstraps) from the original one by sampling with replacement, and individually training a model on each. For classification problems, the final prediction is made from the majority vote of all models. In case of regression, the average of all models’ predictions is taken. Bagging generally boosts performance for unstable methods like neural networks, classification and regression trees, and subset selection in linear regression; though it can slightly deteriorate the performance of stable methods like k-nearest neighbors. An example of bagging is a random forest, which is a group of decision trees built using bagging and feature randomness, wherein each tree can only pick from a random subset of features.
+
+* Boosting
+Iterative ensemble algorithm: training the first weak classifier on the original dataset; reweighting samples based on their classification, giving higher weight to misclassified samples; repeating the process to add subsequent classifiers to the ensemble; and forming the final strong classifier as a weighted combination of all classifiers proportionate to their training errors. Gradient boosting machine (GBM) is a typical example of a boosting algorithm, typically derived from weak decision trees, which allows optimization of any differentiable loss function. Variants like XGBoost and LightGBM have been extensively used in tasks ranging from classification, ranking, to scientific discoveries due to their high performance and, in case of LightGBM, faster training on large datasets due to parallel learning.
+
+* Stacking
+Training base learners on data and creating a meta-learner for final predictions which can be:
+a) a simple heuristic, taking a majority vote for classification tasks or an average vote for regression tasks,
+b) another model like a logistic or linear regression model. One useful resource for building such an ensemble is the ensemble guide by MLWave, a legendary team on Kaggle.
+
+
+Section: Experiment Tracking and Versioning
+
+The necessity to experiment with various model architectures and params to find the most optimal one => need tracking definitions and artifacts for comparison between experiments to understand which minor adjustments impact model performance. Tools originally intended for experiment tracking, like MLflow and Weights & Biases, have incorporated versioning into their capabilities, and vice versa for tools like DVC which were intended for versioning.
+
+
+Subsection: Experiment tracking
+
+Experiment tracking - monitoring an experiment's progress and outcomes to enable comparison across experiments, provides insights into how alterations in a component impact the model’s performance. Though one way to track experiments is by automatically logging all code files and outputs, using third-party tools can provide useful dashboards and allow experiment sharing among coworkers.
+
+These days, numerous factors are tracked during the training process to evaluate the model's learning quality such as the loss curve, model performance metrics, log of corresponding samples and predictions, speed of your model, system performance metrics, and values over time of certain parameters and hyperparameters. However, tracking everything can become overwhelming due to the current limitations of tools and can divert focus from the truly vital aspects.
+
+
+Subsection: Versioning
+
+Logging all experiment details for potential future replication or comparison. In the ML world, versioning is essential for both code and data to replicate and validate experiments accurately. Legal factors (GDPR) add another dimension to data versioning - deletion requests from users can restrict recovery of older datasets. Tools like DVC register a data diff if the checksum of the total directory changes or a file is deleted or added, but sometimes it's not clear what constitutes a 'difference' in data + merging data versions from different developers for training different models is technically difficult.
+
+Even w/versioning, reproducibility in ML systems is not guaranteed because of non-deterministic nature of ML experiment outcomes due to varying frameworks and hardware. However, as our understanding of ML improves, we may predict the best configurations without numerous experiments.
+
+
+Subsection: Debugging ML Models
+
+Challenges include silent failures of ML systems, slow validation processes to confirm bug fixes, and cross-functional complexity of errors resulting from multiple components managed by different teams. Several reasons why ML model can fail including theoretical constraints, poor choice of hyperparameters, data collection and processing issues, poor implementation of the model, and the poor choice of features => Debugging practices in ML should be both preventative to reduce bug proliferation and curative for identifying and fixing bugs - start w/simple models + gradually add components, overfit a single batch to test implementation, use random seed for reproducibility.
+
+
+Section: Distributed Training
+
+Designing ML systems at scale, particularly when dealing with large datasets that cannot fit into memory - a common scenario with medical data, genome sequences, or large text models. When this happens, algorithms for preprocessing, shuffling, and batching data need to run out of core and in parallel, often resulting in instability for gradient descent-based optimization due to small batch sizes. Possible workaround - gradient checkpointing, a technique that balances memory and computation to increase efficiency. It allowed for fitting significantly larger models onto GPUs with only a modest rise in computation time. Even when a sample fits into memory, using checkpointing can help train models more rapidly by including more samples in a batch.
+
+
+Subsection: Data parallelism
+
+Training ML models on multiple machines using data parallelism is the norm. One major problem - accumulating gradients from different machines: in synchronous stochastic gradient descent (SGD), the system waits for all machines to complete a run, resulting in slowdowns caused by stragglers. The straggler problem escalates with more machines. Asynchronous SGD tries to solve this problem by updating weights as gradients are available, but it risks causing gradient staleness if weights have changed before all gradients have been received. Although asynchronous SGD theoretically needs more steps to converge, in practice it converges similarly to synchronous SGD due to sparsity of gradient updates with large-scale models.
+
+Scaling up models across multiple machines may also inflate batch sizes significantly, which can affect learning rate and stability of convergence. Diminishing returns are observed when increasing the batch size beyond a certain point. Furthermore, balancing the workload among multiple machines is essential for optimal resource usage; one method is altering the batch sizes among workers, but this isn't the most effective solution. Future work must focus on solving these issues for efficient parallel training of ML models.
+
+
+Subsection: Model parallelism
+
+three main types of parallelism in ML system design: data parallelism, model parallelism, and pipeline parallelism. Data parallelism involves each worker having a complete copy of the model and independently computing its own portion. Model parallelism - different parts of the model are processed on different machines, but this doesn't always mean tasks will run in parallel: if a part of the model depends on another part processed on another machine, execution must wait for that part to finish. Pipeline parallelism solves this problem by breaking the computational task into smaller parts (micro-batches) that can be executed in parallel across machines. The result from one machine's computations is passed to the next, allowing multiple parts to be computed simultaneously. Model parallelism and data parallelism can be combined for more efficient use of hardware (may require significant engineering effort).
+
+
+Section: AutoML
+
+AutoML was highlighted by Jeff Dean from Google during the TensorFlow Dev Summit 2018. 
+The idea is to leverage computational resources rather than manually selecting less-than-perfect models, making the design of ML systems more efficient and optimal (also utilizing human ML engineers' salaries for this).
+
+
+Subsection: Soft AutoML: Hyperparameter tuning
+
+AutoML is the automation of selecting the right ML algo to solve real-world problems, with one key common form being hyperparameter tuning. Hyperparameters: learning rate, batch size, # hidden layers, and dropout rate - largely impact ML models' performances. Advents of AutoML fostered adoption of auto HP tuning. However, some practitioners still rely on manual, gut-feeling approaches. Auto HP tuning i - optimizing a model within a search area, with the performance evaluated on a validation set (not test set) using methods such as random search, grid search, or Bayesian optimization. It's important to pay more attention to those HP that significantly influence the model’s performance.
+
+
+Subsection: Hard AutoML: Neural Architecture Search (NAS) and learned optimizer
+
+NAS treats the components of a model, such as the size of a convolution layer or model architecture, as hyperparameters. A NAS setup includes three parts: a search space defining possible architectures, a performance estimation strategy to evaluate candidate architectures, and a search strategy to explore these options. Common search strategies are reinforcement learning and evolution. Normally, the common building blocks for NAS are different types of convolutions, activations, pooling and identities. Learned optimizers replace the functions that specify a model's update rule with a neural network. Optimizers must be trained on a set of tasks, then used for new tasks, continually improving themselves.
+
+Though the upfront costs of NAS and meta-learning rules are high, so are the hopes for threm. For example, Google's AutoML team developed EfficientNets, a family of models offering superior accuracy and efficiency. These advancements enhance the feasibility and versatility of ML models in different production scenarios.
+
+
+Subsection: Four Phases of ML Model Development
+
+* First phase - attempt non-ML solutions (simple heuristics as initial predictors) - could prove non-ML solutions sufficient, e.g. Facebook newsfeed algo started w/out predictive algo.
+* Second phase - simple ML models, LR or GBM trees, to validate the problem framing and data: easier to implement, deploy, and help to establish an ML framework.
+* Third phase - optimizing simple models using various means: adjusting objective functions, HP search, feature engineering, adding more data, creating ensembles.
+* Fourth phase - explore complex models when simple models reach their limit, but  significant improvement is essential. Good to test how quickly a model decays in production to plan for retraining strategy.
+
+
+Section: Model Offline Evaluation
+
+Inability to measure performance and compare different algos can hinder identifying the optimal solution and persuading management to adopt ML. Establishing metrics for model evaluation relevant to a company's business is suggested as a potential solution. The same methods should ideally be used to evaluate models during development and production. However, this is often impractical due to the lack of ground truth labels in production. For certain tasks, it's possible to deduce labels based on users' feedback (using clicks to infer the success of recommendations). But tis method comes with numerous biases.
+
+If direct evaluation of a model's performance is unfeasible in production, conduct continuous monitoring to detect changes in performance and identify failures. Post-deployment, the model needs constant monitoring and testing. Evaluation methods include the use of baselines for comparative evaluations and methods beyond overall accuracy metrics (see below).
+
+
+Subsection: Baselines
+
+It is important to evaluate ML models against relevant baselines to understand their effectiveness. A system's usefulness isn't determined by high scores on evaluation metrics alone, as these metrics may not give a true picture of real-world performance, depending on the problem at hand.
+
+Five types of baselines are suggested for evaluation:
+* random baseline = random predictions by the model;
+* simple heuristic = a basic rule or heuristic as prediction;
+* zero rule baseline = always predict the predominant class;
+* human baseline = comparing the model's performance with human experts in the field;
+* comparing against existing solutions (e.g. older or simpler ones).
+
+Determining a model's value = distinguishing between a "good system" (performs well within its class) and a "useful system" (provides tangible benefits in solving a given problem or task). If a model is excellent by one measure, it doesn't guarantee that people will trust it or it will improve existing processes, while a model that isn't highly rated can still be useful if it aids users in certain tasks, enhances productivity, or is cost-effective.
+
+
+Subsection: Evaluation Methods
+
+While academic settings often focus on performance metrics in evaluating ML models, it's important to also ensure models are robust, fair, calibrated, and logical in real-world applications. Various evaluation methods can assist in measuring these model characteristics.
+
+
+Subsection: Perturbation tests
+
+The best-performing model on training data may not perform well on noisy, real-world data (COVID cough in a hospital to train on vs. in a noisy street to test in real life). To test under real-world conditions - modify test data to add background noise to or clip the audio, add other object to images, and other distortions. Models should be evaluated on their ability to handle 'messy' data, not just clean dataset, to account for user variance. Additionally, noise-sensitive models are hard to maintain and more vulnerable to adversarial attacks.
+
+
+Subsection: Invariance tests
+
+Berkeley study found racial discrimination in mortgage applications in 2008-2015 => changes to certain input aspects such as race, name, or gender shouldn't influence the output of the ML model. otherwise the model is biased. To mitigate - test the model by altering sensitive info but maintaining other inputs to see if the output changes. A more effective approach - exclude sensitive info from the training data.
+
+
+Subsection: Directional expectation tests
+
+Input-output relationship is important in ML. Certain input variations, such as changes in lot size or square footage, should alter predicted output (house prices). If responses counter intuition, it implies the model may not be learning correctly => further investigation needed before deploy.
+
+
+Subsection: Model calibration
+
+Model's probability predictions must match the actual frequency of outcomes - key measure of a model's reliability. Uncalibrated model may lead to inaccurate preds. Example 1: movie recommender system - if a user watches romance movies 80% of the time and comedies 20% of the time, the recommendations from a well-calibrated model should reflect these proportions. Example 2: model predicting the likelihood of a user clicking on an ad - if an ad has a 10% click probability, but gets clicked only 5% of the time, the lack of calibration results in inflated expectations of click numbers.
+
+Calibration can be measured by plotting the predicted probability against the actual frequency of outcomes. Platt scaling is a common method used for calibrating models, and scikit-learn provides tools like sklearn.calibration.CalibratedClassifierCV for this purpose.
+
+
+Subsection: Confidence measurement
+
+Confidence score - gauging reliability of / the usefulness threshold for each individual prediction. Lack of certainty measure may cause user dissatisfaction / misclassification - it's crucial to set a certainty threshold for showing predictions and decide what to do if predictions fall below.
+
+
+Subsection: Slice-based evaluation
+
+Simpson’s paradox, where a trend present in subgroup analysis disappears or reverses when groups are combined => don't focus on overall ML metrics only and conduct slice-based evaluations when designing ML systems to avoid biases or blind spots in data. Conduct the exploration and identification of critical data slices:
+* heuristics-based (using domain knowledge),
+* error analysis (manually checking misclassified examples),
+* use algos for automatic discovery (Slice Finder),
+* It is important to have sufficient, correctly-labeled data for each slice to ensure the quality of evaluation data.
+
+
+CHAPTER 7. Deployment of ML models
+
+Deployment to prod env - model accessible to millions of end users w/low latency and high uptime. Simpler deployments may be Flask or FastAPI apps on AWS or GCP. More complex cases have stringent requirements: low latency at scale, proper notification about abnormalities, prompt troubleshooting, deploying updates smoothly => challenging software development, system design, and incident response. 
+
+Model deployed by model developers or other dedicated teams? - affects communication overheads, slow updates, and difficulty in debugging. For models to be used by other apps need to describe the model structure definition and model’s parameters. 
+
+Serving model predictions to users: online or batch prediction. Location of inference - on device (edge computing) or cloud - affects model design, infrastructure needs, and user experience.
+
+
+Section: ML Deployment Myths
+
+
+Subsection: Myth 1: You Deploy Only 1 or 2 ML Models at a Time
+
+Academia - ML project is often 1 model. Industry - multiple models in prod in one application. E.g. ride-sharing Uber app => separate models for ride demand, driver availability, ETA, dynamic pricing, and more. If a global app => unique models for each country. Uber and Google may manage thousands of models concurrently. According to 2021 Algorithmia study, among organizations with over 25,000 employees, 41% have more than 100 models in prod.
+
+
+Subsection: Myth 2: Model Performance Remains the Same with Time
+
+Need to account for "software rot" / "bit rot". ML systems experience "data distribution shifts" (from training distributions) => model performance peaks after training and then declines.
+
+
+Subsection: Myth 3: No Need to Update Models
+
+Need for regular updates of ML models to maintain performance. Tech companies may update their systems multiple times a day. The question isn't how often you should update, but how often you can (rapid updates), e.g. Weibo updates certain ML models every 10 minutes (Alibaba, ByteDance too).
+
+
+Subsection: Myth 4: Most ML Engineers Don’t Need to Worry About Scale
+
+Scalability is important - system's ability to handle hundreds of queries per second or serve millions of users a month is crucial. Giants like Google, Facebook, or Amazon have massive scale requirements, BUT Stack Overflow Developer Survey 2019 - over half of respondents were employed by companies with at least 100 employees => ML engineers should prioritize scalability in their apps.
+
+
+Section: Batch Prediction Versus Online Prediction
+
+* Batch preds (asynchronous preds) - generating preds periodically / upon triggers, beneficial for processing bulk data when immediate results aren't necessary; the preds are stored and retrieved as needed. Example: create movie recommendations every four hours for all users; display pre-calculated recommendations when a user logs in. Can be historical data, e.g. from DBs.
+
+* Online preds (synchronous or on-demand preds) - generating preds in real-time, promptly upon request: Google Translate and receives an immediate translation. This approach often uses RESTful APIs to route requests to pred service. Advantage: generating real-time predictions only for active users, avoiding wastage of resources on inactive users. Can use additional real-time (streaming) features
+
+* Incorporating both: preds are pre-calculated for popular queries, and online preds made for less-used queries.
+
+* Confusion: a) both batch and online can make predictions for multiple samples (batch) or per request (single sample) => "synchronous" and "asynchronous" preds may be better terms, but online prediction requests can be asynchronous in nature, b) "streaming features" and "online features" are not synonymous. Online features = any features for online preds incl. batch features in memory; streaming features = features derived from real-time data.
+
+* From batch to online preds: common platforms for deploying models: Amazon SageMaker and Google App Engine. Online preds are ideal for prototyping. Potential drawback of online preds - delay to generate predictions. Batch preds (computed in advance and stored) are efficient for processing high volumes of data which are not needed instantly. Significant limitation - model less responsive to changing user preferences since its ability to update real-time recommendations is restricted. Apps with real-time response (fraud detection, translation, autonomous vehicles) need online preds. With advancements in hardware and technique development for swifter, more cost-efficient online predictions, it's speculated that online prediction might become the dominant approach.
+
+* Unifying Batch Pipeline and Streaming Pipeline: systems like MapReduce and Spark - periodic processing of big data, the these batch systems were used to make preds. However, separate streaming pipeline is needed to use real-time info for online preds. Separate pipelines for batch and real-time processing often cause errors when changes in one are not reflected in the other (esp. if owned by different teams) => concept of unifying batch and stream processing has been gaining popularity in the ML community. 
+Uber and Weibo use stream processor Apache Flinkare to streamline their batch and streaming processing pipelines. Others use feature stores for consistency between batch features during training and streaming features during prediction.
+
+
+Section: Model Compression
+
+Three ways to reduce model inference latency:
+a) accelerate inference speed,
+b) reduce model size,
+c) increase hardware speed.
+Model compression or inference optimization originally served to fit models on edge devices. There is a growing body of research and utilities available for this. Key resources: 1) "The Top 168 Model Compression Open Source Projects" on Awesome Open Source and 2) the 2020 "Survey of Model Compression and Acceleration for Deep Neural Networks" by Cheng et al.
+
+* Low-Rank Factorization - replacing high-dimensional tensors with lower-dimensional ones to decrease # params and increase processing speed; employed in compact convolutional filters; facilitated development of smaller, faster models; applicability is limited due to specificity to particular models and extensive architectural knowledge required for design. SqueezeNets model utilized this to achieve AlexNet-level accu on ImageNet w/50x fewer params (replacing 3 % 3 convolutions with 1 % 1 ones). MobileNets model decomposes standard convolutions into depthwise and pointwise convolutions - significant reduction in # params.; however, its.
+
+* Knowledge Distillation - a smaller, deployable student model is trained to imitate a larger teacher model or group of models. Advantage - applicability irrespective of differences in models' architecture. Drawback - need a pretrained model as the teacher, then less data is needed for student training. If no teacher - teacher network must be trained demanding more data and longer training time. The method's effectiveness also depends on specific application and model architectures, limiting its widespread use in production. Even though the student is often trained following a pretrained teacher, concurrent training of both is also possible. Example: DistilBERT reduced BERT's size by 40% but maintains 97% of its capabilities and runs 60% faster
+
+* Pruning - originally used for decision trees but adapted for neural networks. Can mean removing entire nodes = changing network's architecture and reducing its parameters. Commonly, setting less significant pred params to zero => reducing # non-zero params w/out altering network's architecture, making neural network sparser, taking up less space. Experiments have shown over 90% reductions in nonzero parameters, thereby decreasing storage needs and enhancing computational performance without affecting accuracy. The value of pruning is debated. Some researchers argue that its core value is not the important weights but the pruned architecture, which can be used as an architecture search paradigm and should be retrained from scratch. Contrastingly, other studies showed that large sparse models, created by pruning, perform better than their retrained dense counterparts.
+
+* Quantization - popular method, works by using fewer bits to represent model's params, reducing its size and memory footprint and increasing computational speed by allowing larger batch sizes and faster computations - 16 bits instead of 32 bits to represent a float significantly cuts memory usage, single bit to represent each weight as extreme case - further reduces the memory footprint. Implementation: in-training quantization (quantization aware training - allows for training larger models on the same hardware due to less memory requirement per parameter) or post-training. Low-precision training, supported by modern hardware like NVIDIA's Tensor Cores and Google's TPUs, is gaining popularity. Fixed-point inference has become a standard in the industry - some edge devices only support fixed-point inference. However, quantization comes with a trade-off - reduction of bits shrinks the value range that can be represented, requiring rounding up or scaling of out-of-range values. This can lead to performance-altering rounding errors or, in extreme cases, under-/overflow and rendering to zero. Efficient coping mechanisms are provided by most major frameworks.
+
+
+Subsection: Case Study
+
+Roblox optimized ML models in production - to handle over 25,000 inferences per second under 20 ms latency, Roblox replaced large BERT model w/fixed shape input with DistilBERT w/dynamic shape input. Most significant improvement - quantization from 32-bit floating points to 8-bit integers reduced latency by 7 times and increased throughput by 8 times (quality changes unknown).
+
+
+Section: ML on the Cloud and on the Edge
+
+Deploying models on the cloud (AWS or GCP) - common simple way to delve into ML. However, cloud computation can be costly and require stable internet connections, prompting a shift towards edge computing = computations occurs on consumer devices: smartphones, laptops, and embedded systems. Alleviates network latency, works with little or no internet and mitigates security (not transmitting sensitive user data over network). BUT need computational power, memory, and battery/energy on edge device + privacy issues (if devices stolen). Advantages of edge - edge devices optimized for different ML apps. Challenge - making models run efficiently on various hardware.
+
+
+Subsection: Compiling and Optimizing Models for Edge Devices
+
+Different hardware backends (CPU, GPU, and TPU) have different memory layout and compute primitives. Making ML model compatible with them is time-consuming and complex as it involves mapping the ML workload to the unique hardware. Solution - original model code is transformed into a sequence of intermediate representations (IRs or computation graphs mapping out the sequence of computations) = bridge between the frameworks and platforms => TensorFlow / PyTorch framework developers only need to translate their code into the IR and the hardware vendors, instead of supporting multiple individual frameworks, support only the common IR by converting it into hardware-native code compatible with the hardware backend .
+
+
+Subsection: Model optimization
+
+ML models may function well in dev, but underperform in prod due to slow execution. Inefficient generated code may not fully use data locality, hardware caches, or advanced features like vector or parallel operations, limited optimization across pandas, NumPy, and TensorFlow => data movement slows the entire workflow. Optimization engineers who have skills in both ML and hardware architectures, are hard to find and costly.
+
+ML model optimization can be:
+* local (optimizing operator or set of operators in model) - include vectorization, parallelization, loop tiling, operator fusion, dividing array operations, reordering data access based on hardware cache, and merging multiple operations to reduce latency and memory access on chips.
+* globally (optimizing the entire computation graph) - one good practice: fusing computation graphs of CNNs vertically or horizontally to lessen memory access and quicken the model.
+
+
+Subsection: Using ML to optimize ML models
+
+Optimization engineers manually design heuristics to optimize ML models, but it's not efficient. Optimization of ML models depends on specific operators within their computation graphs, which vary based on neural network type (CNN, RNN, Transformer). Hardware vendors like NVIDIA and Google optimize popular models, but custom optimization is required for new model architectures. Potential solution - exploration of all possible paths for executing a computation graph to select the best-performing one - there is a vast # possible paths, exhaustive exploration is impractical. Instead, we can leveraging ML to narrow down search space and predict execution time of each path.
+
+Technique cuDNN auto-tune (PyTorch on GPUs) optimizes convolution operators. More general approach autoTVM breaks computational graph into subgraphs, estimates their size, allocates search time for each subgraph, and combines best paths to optimize the entire computation graph. Adaptable to various hardware configurations, but initially takes time to show significant improvements (hours or even days).
+
+Once optimization is complete, the results can be stored and reused to optimize existing models and serve as a starting point for future tuning sessions. This optimization is particularly suitable for models intended for production deployment on target hardware for inference tasks.
+
+
+Subsection: ML in Browsers
+
+Compilers and WASM generate code running in browsers, bypassing hardware compatibility needs - simplifies execution of ML models across diverse devices:
+* Compilers TensorFlow.js, Synaptic, brain.js compile models into JavaScript; drawback - it is slow for complex tasks like feature extraction.
+* More advanced WebAssembly (WASM) - open standard for executing programs in browsers, allows scikit-learn, PyTorch, or TensorFlow models to be compiled and executed as WASM supported by 93% of devices worldwide as of September 2021. Shortcoming - WASM performs slower in browsers vs. running code natively on devices lagging by 45-55% on average.
+
+
+CHAPTER 8. Section: Data Distribution Shifts and Monitoring (This GPT-4 summary was not summarized by me, but see file MLSD Part 2)
+
+Example: AI-powered company using ML model to predict inventory demands. Initially good performance, but started to degrade over time => overstocking and understocking issues: deployed ML model requires continuous performance monitoring and updates. Also, models can fail in prod despite doing well in dev: changes in data distribution => monitor data distribution shifts + regular updates of prod models.
+
+
+Section: Causes of ML System Failures
+
+ML system failures occur when operational or ML performance metrics are violated. In a typical software system, operational metrics like latency and throughput are evaluated. However, with ML systems, both types of metrics are important. For an English-French translation system, the operational expectation may be that it returns a translation within a certain time, and the ML performance expectation might be the accuracy of the translation. 
+
+An operational failure could be easily noticeable, such as a webpage error or a system timeout, whereas detecting ML performance failures is more challenging. This is because the performance of ML models in prod needs to be constantly monitored. Often ML systems fail silently as users might not always know whether the output is incorrect.
+
+Understanding the reasons behind ML system failures can help in effectively diagnosing and fixing them. These reasons could either be basic software failures or ML-specific ones.
+
+
+Subsection: Software System Failures
+
+The text discusses the various forms of software system failures that can occur in both ML and non-ML systems, emphasizing the importance of traditional software engineering skills in troubleshooting and preventing these issues. Examples of such failures include dependency failure, deployment failure, hardware failures, and server downtime or crashes. Notably, a study by Google engineers found that more than half of the observed failures in large ML pipelines at the search engine giant were related to issues not directly tied to ML, such as mistakes in workflow scheduling or data pipeline configuration. Despite the importance of understanding the potential for non-ML related failures, addressing these requires traditional software engineering rather than ML skills. As ML adoption in the industry is relatively new, associated tools and best practices are not yet fully developed. However, as these mature, the proportion of failures specific to ML systems could rise, and that of general software system failures might decrease.
+
+
+Section: ML-Specific Failures
+
+ML systems often encounter specific failures including data processing issues, inappropriate hyperparameters, inconsistencies between training and inference pipelines, changes in data distribution over time, edge cases, and deteriorating feedback loops. These ML-specific failures, despite comprising a small portion, are more critical as they are challenging to identify, rectify, and may render entire ML systems unusable. Such failures are examined in detail, especially highlighting issues of mismatched production and training data, edge cases, and degenerate feedback loops that commonly emerge after the deployment of a model.
+
+
+Subsection: Production data differing from training data
+
+The text discusses the complexities and challenges of designing ML systems. It states that an ML model learns the data distribution during training, with the goal of making accurate predictions for unseen data, but the training and unseen data need to come from a similar distribution. The text argues that this condition is often unmet due to differences in real-world and training data, and the non-stationary nature of real-world data. It further elaborates how real-world data shifts frequently because of unusual events, gradual changes, or seasonal variations. 
+
+The text also mentions two major failure modes- the train-serving skew, where the model performs well during development but poorly after deployment, and performance degradation over time as data distribution changes. The author also points out that because of complexities in ML systems and improper deployment practices, what often appears to be data shifts could actually be internal errors such as bugs in the data pipeline or inconsistent features extraction.
+
+
+Subsection: Edge cases
+
+The text discusses the importance of designing ML systems that can effectively manage edge cases to avoid catastrophic mistakes. These edge cases, data samples so extreme that they may cause the model to falter, are key to robust AI systems, particularly in safety-critical applications such as self-driving cars, medical diagnosis, and traffic control. The text highlights that even non-safety-critical applications, like customer service chatbots, need to handle edge cases to prevent issues like outputting inappropriate content, which can harm a brand's reputation. A spike in model failure might indicate that the underlying data distribution has shifted.
+
+
+Subsection: Edge Cases and Outliers
+
+The text explains the distinction between outliers and edge cases in ML. Outliers, in this context, pertain to data points that deviate significantly from others, potentially messing with a model's decision boundaries and overall performance. However, during the inference phase, outliers cannot be easily removed or ignored. Methods used can include transforming the input, but the goal is to develop a model that performs well, even with unexpected inputs. On the other hand, edge cases relate to significant drops in model performance. An outlier can turn into an edge case if it causes the model to perform unusually poorly. However, not all outliers are edge cases; an outlier that is appropriately handled by the self-driving car, for example, would not be regarded as an edge case. Therefore, despite the persistence of debates over defining edge cases in the relatively new field of production-grade ML, this explanation provides a working dichotomy.
+
+
+Subsection: Degenerate feedback loops
+
+The text is about designing ML systems, focusing on a concept called "degenerate feedback loops," their effect on system performance and potential mitigation techniques. These loops occur when a system's outputs are used to generate the system's inputs, impacting the system's future performance. They can cause unintended consequences such as popularity bias, filter bubbles or echo chambers, whereby items, once popular, keep getting more popular, making it hard for new items to gain visibility. Bias can also be magnified, impacting sectors such as recruitment services.
+
+Evidence of degenerate feedback loops can be found when system outputs become homogeneous due to embedded biases and popularity bias. In a system not yet live, loops can be detected by measuring the popularity diversity of system outputs.
+
+Two primary methods are proposed to correct degenerate feedback loops: randomization and the usage of positional features. Randomization involves introducing randomness in the predictions, thus reducing their homogeneity. This approach can reduce user experience as it could show them irrelevant items. In cases where the position of a prediction influences its feedback, positional features can be encoded. Positional features influence how likely a prediction is likely to be interacted with based on its placement.
+
+Managing degenerate feedback loops effectively involves sophisticated methods, such as using two different models, one predicting user interaction based on the position of an item, the other predicting user interaction without considering positional influence.
+
+
+Section: Data Distribution Shifts
+
+The text discusses the concept of data distribution shifts in ML systems, which refers to the changes in data over time that a model works with, resulting in decreased prediction accuracy. It distinguishes between the source distribution (data the model is trained on) and the target distribution (data the model runs inference on). Despite recent increased discussion on data distribution shift due to wider adoption of ML in industries, it's not a new concept and has been studied since 1986. A book titled 'Dataset Shift in ML' by Quiñonero-Candela et al provides more insight into this concept.
+
+
+Subsection: Types of Data Distribution Shifts
+
+Data distribution shift, concept drift, covariate shift, and label shift are distinct subtypes of data shifts that hold different meanings within ML systems, an understanding of which is crucial for the development of efficient algorithms to detect and handle these shifts. In supervised learning, the training data, recognized as a set of samples from the joint distribution P(X, Y), is usually modeled as P(Y|X), where X denotes the model inputs and Y represents its outputs. Covariate shift occurs when the probability density of the input, P(X), changes but the conditional probability of an output given an input, P(Y|X), remains constant. Label shift happens when the probability density of the output, P(Y), changes while P(X|Y) remains constant. Concept drift, on the other hand, takes place when P(Y|X) changes but P(X) remains the same. These shifts are identified according to their reference to different decompositions of the joint distribution.
+
+
+Subsection: Covariate shift
+
+Covariate shift, a widely studied form of data distribution shift, happens when the distribution of input variables changes while the conditional probability of an output given an input remains the same. In ML, this can occur due to biases in data selection, alterations to training data for better model learning, changes in the learning process particularly in active learning, or significant changes in a model's use environment. For instance, if the demographic of a user base changes but the conversion probability based on income remains constant, a covariate shift is experienced. Techniques, such as importance weighting, can help train models to work with deviating real-world input distributions. Nonetheless, it remains difficult to preemptively train models to be robust against unknown shifts, since real world distribution changes are often unpredictable. Research on learning latent variable representations invariant across data distributions to address such situations is ongoing.
+
+
+Subsection: Label shift
+
+Label shift, or prior shift, occurs when the output distribution changes but the input distribution for a given output stays constant. In contrast, covariate shift emerges when the input distribution alters, causing both the input and output distributions to change, which results in simultaneous covariate and label shifts. However, changes in the input distribution don't always lead to label shifts. For example, even if all women start taking a preventive drug reducing the probability of getting breast cancer, the age distribution of those with breast cancer remains the same, indicating a label shift. Techniques to detect and adapt models to label shifts are similar to the ones for covariate shifts.
+
+
+Subsection: Concept drift
+
+Concept drift, or posterior shift, describes a phenomenon in ML where the input data remains the same, but the output changes. This can occur due to varying circumstances, such as changes in real estate market caused by the COVID-19 pandemic which altered the price of properties despite the house features remaining the same. It also presents cyclically or seasonally, as observed in fluctuating rideshare or flight ticket prices, depending on weekdays or holidays. To manage these variations, companies may develop separate models to accurately predict outputs in different scenarios.
+
+
+Section: General Data Distribution Shifts
+
+ML systems can experience performance degradation due to changes in the real world that aren't well-studied in research. Such changes may include feature changes or label schema changes. Feature changes occur when new features are added, old ones removed, or when the range of possible values for a feature changes. An example of this is when a feature like 'age' that was recorded in years is now recorded in months, causing a range drift. 
+
+Label schema changes occur when the set of possible values for the output (Y) changes, altering both the probability of the output (P(Y)) and the conditional probability of the input given the output (P(X|Y)). This can occur due to changes in the range of output values in regression tasks or due to introduction of new classes in classification tasks. For instance, a sentiment analysis task which initially identified tweets as POSITIVE, NEGATIVE, and NEUTRAL may need to be updated to identify NEGATIVE tweets as either SAD or ANGRY, requiring data relabling and retraining of the model. 
+
+Compounding these challenges is the possibility of simultaneous occurrence of different types of shifts, making it more difficult to maintain the model's performance.
+
+
+Subsection: Detecting Data Distribution Shifts
+
+The text discusses the importance of monitoring the performance of ML models in production to detect shifts in data distribution. The first suggested method is through accuracy-related metrics like accuracy, F1 score, recall, and AUC-ROC. However, this method often requires ground truth labels, which may not always be available or may be delayed in a production setting. Instead, monitoring other relevant distributions such as the input distribution P(X), the label distribution P(Y), and the conditional distributions P(X| Y) and P(Y|X) is suggested. Unfortunately, to monitor the label and conditional distributions, knowledge of ground truth labels is imperative. There has been research into detecting label shifts even without labels from the target distribution, like the Black Box Shift Estimation. However, industry practices mostly prefer methods focusing on changes in input distribution, particularly feature distributions.
+
+
+Subsection: Statistical methods
+
+In industry, professionals often use statistical measures like mean, median, variance, etc., to compare two distributions of a ML model's feature during training and inference phases. This comparison can aid in identifying whether there has been a shift in the inference distribution from the training distribution. However, these measures by themselves are not always sufficient. A two-sample hypothesis test is a more refined method. This test is used to establish if differences between two populations (sets of data) are statistically significant.
+
+A commonly used two-sample test is the Kolmogorov–Smirnov test, which is nonparametric and can apply to any distribution, but works only for one-dimensional data and can be costly, often resulting in false positives. An alternative test is the Least-Squares Density Difference, and there's also the Maximum Mean Discrepancy (MMD) for multivariate two-sample testing. While it's popular in research, few industries actually use MMD.
+
+Before carrying out a two-sample test, it's advisable to reduce data dimensionality as these tests work better on low-dimensional data. A good tool for drift detection is the open-source Alibi Detect, which implements many drift detection algorithms.
+
+
+Subsection: Time scale windows for detecting shifts
+
+The text discusses different types of shifts in ML systems: spatial and temporal. Spatial shifts occur across access points, like when an application gets a new group of users or is used on a different device. Temporal shifts happen over time and are detected by treating the ML application's input data as a time-series data. Detecting temporal shifts can be challenging when they're confounded by seasonal variations. The text also underlines the importance of choosing the appropriate time scale window, noting that too short a time window can lead to false alarms. 
+
+Two methods for computing running statistics over time, sliding statistics and cumulative statistics, are explained. The former is computed within a single time scale window and reset at the start of each window. Cumulative statistics continually incorporate data and don't reset. However, cumulative statistics can obscure specific time window phenomena. 
+
+Many organizations use the training data distribution as the base, monitoring production data distribution at set intervals (e.g., hourly or daily). More advanced monitoring platforms provide a merge operation that combines statistics from shorter time windows into larger ones. Furthermore, some platforms perform a root cause analysis that analyzes statistics across various time windows to identify precisely when data changes occurred. The complexities of working with data in temporal spaces are acknowledged and time-series analysis techniques are recommended for interested readers.
+
+
+Subsection: Addressing Data Distribution Shifts
+
+The text highlights different aspects of managing data shifts in ML systems. Companies at different levels of ML sophistication address data shifts differently, some may be in early stages of model production, while others anticipate and manage shifts by periodically retraining their models, even though the optimal retraining frequency might not be scientifically determined.
+
+To work with new distributions, three main approaches are suggested: 
+1. Training models with massive datasets so that they cover all potential data points in this large distribution.
+2. Adapting pre-trained models to a target distribution without requiring new labels. This involves techniques like unsupervised domain adaptation which learns data representations that are stable to changing distributions, but this approach is relatively underexplored.
+3. The third, more common approach is to retrain the model with labeled data from the new target distribution. However, this can be complicated as it involves decisions about retraining from scratch or fine-tuning the existing model, and determining which data to use for retraining.
+
+Retraining doesn't solely mean starting from scratch, it can also be fine-tuning the existing model. Methods like domain adaptation and transfer learning are also relevant to dealing with data shifts. 
+
+Initial system design considering rate of data shift can contribute to a more robust system. For feature selection, a balance should be maintained between accuracy and stability. Developing separate models for different markets with varying rates of changes could also make the system more adaptable. 
+
+Finally, it's highlighted that not all performance degradation is due to ML issues. Many times, human errors are the cause and should be fixed before attempting to address the data shift. Determining the cause of the shift can be more challenging than detecting it.
+
+
+Section: Monitoring and Observability
+
+The text discusses the importance of monitoring and observability in ML systems for efficient functioning. Monitoring involves tracking, measuring, and logging different metrics to identify errors, whereas observability involves system setup for easier visibility and issue diagnosis, a process called "instrumentation." Observability is integral to monitoring as it makes understanding the system's functioning possible. Examples of such observability include logging unusual events and tracking input transformations.
+
+Operational metrics are essential to monitor in ML systems as they relay system health information such as latency, throughput, prediction requests, and memory utilization. For a software system in production, availability, or system uptime, is essential. This is often defined in service level agreements (SLAs), which set conditions such as latency and time to determine a system's 'up' state. Companies often offer uptime guarantee and credit towards future payments if this isn't met.
+
+ML systems need more than just monitoring system health or uptime. They also need to track ML-specific metrics that reflect the health of the ML models. Even if the system remains up, if the predictions aren't accurate, it impacts user satisfaction levels.
+
+
+Subsection: ML-Specific Metrics
+
+The text discusses the monitoring of four artifacts in ML systems: model's accuracy-related metrics, predictions, features, and raw inputs. These artifacts are generated at different stages of the system pipeline. The farther along in the pipeline an artifact is, the more transformations it has undergone, making any change in it more likely to be due to errors in these transformations. Despite this, artifacts that have gone through more transformations are typically more structured and closer to key metrics, therefore, easier to monitor.
+
+
+Subsection: Monitoring accuracy-related metrics
+
+Logging and tracking user feedback actions, such as clicks, purchases, or votes, is vital in ML systems as it helps determine model accuracy and monitor its performance over time. Even if direct inferences can't be made from feedback, changes in user behavior metrics may indicate performance shifts. For instance, consistent click-through rates coupled with dropping video completion rates may signify a declining recommender system. Additionally, incorporating features for direct feedback collection, like Google Translate's upvote/downvote option, could prompt further system improvements. Any significant increase in downvotes might signify problems, prompting intervention, such as expert intervention to generate new translations for samples attracting downvotes, fostering subsequent model iterations.
+
+
+Subsection: Monitoring predictions
+
+Monitoring predictions is an integral part of managing ML systems. In a regression task, predictions are continuous values, while in a classification task, they are discrete values correlating to the predicted category. Predictions are generally simple to visualize and interpret due to their low dimensionality. 
+
+Monitoring can help detect distribution shifts and peculiar events with predictions. If the prediction distribution shifts without any changes to the model's parameters, it usually signifies a change in the input distribution. Furthermore, instantaneous anomalies, such as a series of 'False' predictions, can be swiftly identified. Monitoring can also bridge the lag between predictions and the availability of actual labels, facilitating quicker responses to accuracy-related issues.
+
+
+Subsection: Monitoring features
+
+ML monitoring solutions focus on monitoring changes in features, particularly useful due to structured nature of features, begins with feature validation (ensures features align with expected schema generated from training data or common sense); if violated, could signify a shift in the underlying distribution. Feature validation can include checking if values are within a range, in correct format, belong to a predefined set, or are always greater than other feature values. Feature validation = table testing / validation (since feats in tables). Open libs like Great Expectations or Deequ by AWS can assist w/basic feature validation. 
+
+Two-sample tests can also be used to detect if the underlying distribution of a feature or set of features has shifted. However, high-dimensional features may require dimension reduction before testing, which may impact test effectiveness. 
+
+Concerns - large # features used by hundreds of models in prod => computational and memory costs of computing summary statistics. Feat extraction often involves many steps, libs, services, which impacts the ability to detect the source of harmful change in feature. Schemas that features follow can also change over time, necessitating schema versioning.
+
+
+Subsection: Monitoring raw inputs
+
+The text discusses challenges associated with monitoring raw input data in ML systems due to the diversity of its formats and structures, and the separation of duties between ML engineers and data platform teams. It's pointed out that raw input data is often handled by data platform teams, making it harder for ML engineers to directly monitor. Additionally, this data is usually already partially processed when it reaches the ML engineers. Furthermore, the text indicates various types of metrics to monitor in these systems, with operational metrics for software systems and ML-specific metrics for health tracking of ML models. The monitoring toolset is set to be discussed in the next section of the text.
+
+
+Section: Monitoring Toolbox
+
+Engineers use specific tools to measure, track, and interpret metrics for complex systems. Although metrics, logs, and traces are often deemed the three pillars of monitoring, their differences are unclear. They appear to be designed from the perspective of those who create monitoring systems, with traces being a form of logs, and metrics deduced from logs. The tools utilized from the perspective of users of these monitoring systems include logs, dashboards, and alerts.
+
+
+Subsection: Logs
+
+Traditional software systems utilize logs to track a variety of events for debugging and analysis. Given the architecture of modern software systems, which often include components such as containers, microservices, and ephemeral auto-scaling instances, the number of logs can quickly become substantial. For example, in 2019, the dating app Badoo was handling 20 billion events daily. To manage this, a practice of distributed tracing is used, assigning each process a unique ID and recording necessary metadata. 
+
+Given the complexity and size of logs, many tools have been developed to aid in their management and analysis. It is now commonplace to use ML for log analysis, in use cases such as anomaly detection and assessing the potential impact on related services during a service failure. 
+
+Generally, logs are processed in batch processes for efficiency, leveraging tools like SQL, Spark, Hadoop, or Hive in a distributed and MapReduce process. However, this approach only allows for periodic discovery of issues. To enable immediate anomaly detection, logs need to be processed as soon as they are logged, making log processing a stream processing issue. Real-time transport tools, such as Kafka or Amazon Kinesis, along with streaming SQL engines like KSQL or Flink SQL, can be used for real-time log processing.
+
+
+Subsection: Dashboards
+
+For visualizing data, useful not only for developers but also for non-engineering stakeholders like product managers. It's vital to select appropriate metrics or abstract from lower-level metrics to generate higher-level signals suited for specific tasks (graphs require experience for meaningful interpretation, overloading dashboards with excessive metrics can lead to 'dashboard rot').
+
+
+Subsection: Alerts
+
+The text discusses the design of alert systems in ML environments. It outlines three components of an alert - the policy, notification channels, and description. Alert policy describes conditions for alert initiation, generally tied to metric thresholds over a given duration. Notification channels define where and to whom the alerts are sent - options range from email addresses, Slack channels to PagerDuty. Descriptions allow the recipients to better understand the issue at hand, often including details of the affected service and actionable instructions. However, the text warns of alert fatigue, a phenomenon where trivial alerts can desensitize people to crucial ones. Hence, meaningful conditions that only trigger critical alerts are vital.
+
+
+Subsection: Observability
+
+Since the mid-2010s, the concept of "observability" has been embraced by the industry over "monitoring". While the latter only implies keeping an eye on system outputs, observability infers that the internal states of a system can be determined using system outputs. In modern software systems, due to their increased complexities and reliance on services run by others, observability has become crucial to understanding irregularities without dismantling the system structure. The system's outputs collected at runtime, known as telemetry, aid in observing the functioning of the system and detecting deviations.
+
+Further, observability allows better nuanced metrics providing deeper insights into the operations, types of inputs and user interactions. It also plays a key role in ML, observability encompasses interpretability which helps understand the workings of an ML model. For instance, it can provide insight into a model's performance degradation over time, allowing for more effective troubleshooting.
+
+Despite its effectiveness, observability is a rather passive concept. One must wait for a shift to detect it, and it uncovers the problem without addressing it. On the other hand, continual learning can actively assist in updating models to shifts.
+
+
+CHAPTER 9. Continual Learning and Test in Production
+
+
+Section: From Discussion 8 in the ML Systems class
+
+To adapt to evolving data distributions, each company should design a continual learning strategy => implements online learning algos to update model params continuously w/new data. Ensemble methods combine predictions from multiple models, allowing for a smooth transition from old and to models. Feedback loop established for continuous  improvement (model’s preds constantly compared w/actual outcomes). If no continual model updates - they may lose accu and relevance in recommendations => decreased user engagement and sales. The models might also fail to adapt to new products, user behaviors, and market dynamics. Adopting a continual learning approach ensures the recommendation system remains accurate and relevant.
+
+Test in Production techniques are of paramount importance. These techniques provide insights into the models' real-world performance and help identify and mitigate issues that might not appear in controlled testing environments:
+* New models deployed as shadow models, running parallel to prod models.
+* Small share of traffic directed to new models for performance comparison.
+* Feature toggles to easily enable or disable new models without redeployment.
+* Automated monitoring and alerts for real-time performance tracking, with KPIs like accu, precision, recall, and F1-score for evaluation.
+* Rollback mechanism to revert to prev model if needed, ensuring reliability and optimal performance before full-scale deployment.
+This approach allows to maintain a robust recommendation system that continuously adapts and improves, providing value to e-commerce platforms and users.
+End of Discussion 8
+
+Continual learning, monitoring, and testing in production are vital to maintaining an adaptable ML system and ensuring the models' performance is understood and updated.
+* Continual learning, primarily an infrastructural problem, bridges the gap caused by dynamic data distribution shifts. Frequent model updates require special infrastructure; optimal frequency of model retraining is to be established.
+* Active testing of new models in prod using live data ensures safe and successful updates.
+* Passive monitoring to track model outputs.
+
+
+Section: Continual Learning
+
+Models are not updated with each new sample in real-time (catastrophic forgetting in ANNs and inefficient use of computing power), instead they are updated with micro-batches of samples (batch size depends on the task). A copy of the model ('challenger') is updated and tested against the existing model ('champion'). If challenger performs better, it takes over champion. Continual learning requires constructing an infrastructure for frequent model updates from scratch or through fine-tuning, and rapid deployment of the updates.
+
+Continual learning doesn't imply constant updates - many companies lack traffic for regular updates + their models don’t decay quickly. Overly frequent updates - no benefit, just overhead.
+
+
+Subsection: Stateless vs. Stateful Training
+
+* Stateful training - continuous training on new data (incremental learning). Requires less data than stateless, can reduce training compute costs significantly. Can eliminate data storage altogether (uses fresh data for each model update), addressing data privacy concerns. Usually applied for data iteration, but some researchers use it for model iteration.
+* Stateless retraining - training from scratch each time - is occasionally needed for model calibration.
+* Data iteration - training from scratch or retraining the same model. * Model iteration - adding new features or modifying model's architecture.
+
+Knowledge transfer and model surgery help bypass training from scratch for model iteration.
+
+
+Subsection: Terminology Ambiguity
+
+* "Online learning" is not online education - learning from each new sample.
+* "Continual learning" - broader version of this, learning in batches or micro-batches.
+"Continuous learning" - ongoing learning process with every new sample, can include DevOps aspects like pipeline setup for continuous deployment. Due to confusion, let's avoid term "continuous learning."
+
+
+Subsection: Why Continual Learning?
+
+Rapidly respond to changes in data distribution
+Adapt to rare events. Example: ride-sharing service adjust ML models dynamically in response to sudden surges in demand due to locality-specific events OR ecommerce platform adapts models for rare, large-scale events like Black Friday (historical data inadequate for accurate predictions).
+
+Another application of continual learning: solving the cold start problem - preds for new users or existing users who switch devices, aren't logged in, or visit the service infrequently. A model that quickly adapts can deliver relevant recommendations even within the first visit (e.g. TikTok's recommender system).
+
+Continual learning - superset of batch learning. With maturation of MLOps, hurdles to set up continual learning will diminish.
+
+
+Section: Continual Learning Challenges
+
+* Fresh data access challenge - availability of new data depends on rate it's stored in data warehouses (slow if it comes from multiple sources). Also, models often require labeled data for updates. Speed of labeling affects the speed of model updates -> ideal tasks for continual learning are those with short feedback loops (natural labels), e.g. dynamic pricing, ETA, stock price preds, ad CTR preds, and online recommender systems. Natural labels may be derived from behavioral activities converted into labels, e.g. a user clicking a recommended product recorded in a log => label compute can be expensive if log volume is high.
+
+Label computations done through batch processing - waiting for logs to be deposited into data warehouses => delays. Faster alternative - pull fresh data and natural labels directly from real-time transports like Kafka and Kinesis. Tools like Snorkel can speed up labeling w/minimal human intervention; crowd-sourced labels - another quick annotation option.
+
+* Evaluation challenge - need to ensure the updates to ML models are effective enough for deployment. More frequent updates increase the chances of failed updates, while exposure to real-world data can make models susceptible to adversarial attacks and manipulations (Microsoft's Tay chatbot was misled into tweeting offensive remarks due to malicious user interactions). Thorough testing of each update is crucial for verifying its safety and performance before wide-scale implementation. However, the time taken for evaluation can also limit the frequency of model updates, as demonstrated by a major online payment system's two-week wait time to accumulate enough fraudulent transactions for an accurate comparative A/B test between current and new models.
+
+* Algorithm challenge - in adapting certain models, particularly matrix-based and tree-based ones, that are less suitable for partial dataset learning than neural networks, e.g. collaborative filtering models require whole dataset to build user-item matrix before performing dimensionality reduction - time-consuming for large matrices (some tree models like Hoeffding Tree can learn incrementally but aren't popular).
+
+Besides learning algos, the feature extract code needs to allow for calculation of feature stats on partial datasets - constant fluctuations in these stats make it hard for models to generalize across different subsets. Solution - keep stats stable by calculating them incrementally as new data arrives.
+
+
+Section: Four Stages of Continual Learning
+
+The current shift towards continual learning occurs across four distinct stages
+
+
+Subsection: Stage 1: Manual, stateless retraining
+
+Model update intervals can be quarterly to annual or in some instances None. Update process is typically manual and disorganized, involving data retrieval, cleaning, and retraining model from scratch on old + new data. Retrained model is then deployed. Chance modifications can lead to discrepancies between the new and old model versions causing hard-to-detect glitches. This scenario is most common among companies that are relatively new to the ML realm and lack a dedicated ML platform team.
+
+
+Subsection: Stage 2: Automated retraining
+
+After deploying several models, the ad hoc, manual process of updating models evolves into scripted, automated retraining run periodically using batch processes like Spark. However, retraining frequency may be based on instinct rather than experimentation, but we need to adjust the schedule according to needs of different models, e.g. embedding model in recommender system may need less frequent retraining vs. ranking model due to slow-changing nature of product characteristics. Automation gets complex if models are interdependent - a change in one triggers an update in another.
+
+
+Subsection: Requirements.
+
+We need an update trigger mechanism for models, which could be time, performance, volume, or drift-based. A robust monitoring solution is required to discern relevant changes and avoid unnecessary model updates due to false alerts. Continual evaluation of model updates is also critical, involving regular testing techniques to ensure updated models function correctly. The complexity isn't in writing a model update function, but ensuring it works as intended after updating.
+
+
+Subsection: Feature Reuse (Log and Wait)
+
+Managing training data for ML model updates - "log and wait" approach. In this method, features extracted from new data by the prediction service are reused for model retraining - computational savings and consistency between preds and training. It's a strategy positioned to counter the train-serving skew, which refers to discrepancies between production data and training data. This approach's popularity is on the rise.
+
+
+Subsection: Stage 3: Automated, stateful training
+
+Then transition from stateless to stateful retraining in designing ML systems. Stateless - training model from scratch which is costly due to high freq. Stateful training economizes this by training model on most recent data. Autoupdate script loads the prev checkpoint into memory and continues training improving the efficiency of process.
+
+
+Subsection: Stage 4: Continual learning
+
+Scheduling ML model updates can be challenging and depends on situational context and data changes, e.g. rapid market changes may necessitate faster retraining cycle => automated update system can be  triggered by shifts in data distributions and drops in model performance, replacing fixed schedules. The ideal scenario couples continual learning with edge deployment. In this case, a base model is installed on a device such as a phone, watch or drone, which continually self-updates and adapts to its environment without a need for a centralized server. This eliminates server costs and eliminates the need for data transfers, enhancing data security and privacy.
+
+
+Section: How Often to Update Your Models
+
+There is a correlation between the gain a model acquires from fresher data and the frequency of retraining => frequency depends on potential improvement from new data.
+
+
+Subsection: Value of data freshness
+
+Frequency of updating ML models depends on performance gains from retraining on fresher data. Approach: train different model versions on data from varying time periods (e.g. 6-month periods) and assess performance changes (on data from the year's end) - performance difference indicates potential improvements from fresher data. Reduce time intervals for greater precision. Facebook decreased their ad CTR prediction model's loss by 1% by changing their retraining frequency weekly to daily. Some companies retrain models every few minutes, if significant performance gains.
+
+
+Subsection: Two types of model updates
+
+* Model iteration - improving model architecture or adding new feats.
+* Data iteration - just using new data (for training from scratch / retraining).
+* Selecting one requires judgment based on the potential to improve performance. Ex. data iteration = same performance gain as model iteration, but a fraction of compute costs. Most suitable approach depends on the specific task and model - experiments are vital. Frequency of model updates changes as the system matures. Initially - as frequent as possible, but as system is more automated - frequency depends on the performance improvement with fresher data.
+
+
+Section: Test in Production
+
+Two types of model evaluation - offline and online. Offline includes:
+* test splits - static benchmark for comparing models. However, evaluating merely on old data distribution's test splits is inadequate;
+* backtests of updated model on freshest data or data from a specific time period in the past tackles this drawback. Backtests should come with supplementary sanity checks using a static test set;
+* data distributions change => performance on current data can't predict future performance => need to determine model's true performance by deploying in prod = test in prod.
+
+
+Subsection: Shadow Deployment
+
+Run new model in parallel with existing one, route all traffic through both, serve preds from existing model, log preds from new model for analysis. Replace the existing model if new model's preds satisfactory => minimizes risk, but can be expensive due to double preds / inference compute cost.
+
+
+Subsection: A/B Testing
+
+Distribute percentage of traffic to existing model and the updated model and monitor the output. External factors cause bias => selection of traffic should be random. Number of samples must be sufficient to confidently confirm the outcome. Judging statistical significance can be complex - generally involves hypothesis testing in a two-sample test. Even if not statistically significant - maybe the two models don't differ significantly. A/B test can involve more than two models. Consider factors like exposure bias and dynamic changes that can interfere with preds.
+
+
+Subsection: Canary Release
+
+Reduces risk of introducing new ML model by gradually deploying it to a subset of users before full release. Direct only some traffic the candidate model (canary). Increase traffic to canary if its performance is satisfactory (up to all traffic), otherwise abort it. Can be used in A/B testing, but otherwise it's unnecessary to randomize the traffic directed to each model. Example, canary can be used for less critical market. Netflix and Google employ automated canary analysis - also use a baseline model that is an old model, but the size of canary, to avoid comparing canary with a much larger existing model.
+
+
+Subsection: Interleaving Experiments
+
+Users are exposed to recommendations from both models at the same time, allowing researchers to observe which model's suggestion the users click on. Reliably identifies superior algos with smaller sample sizes than A/B testing, but relies on user preference and not core metrics (retention and streaming), e.g. positioning of recommendation can affects user's preference. Team-draft interleaving - for each recommendation position, model A or B is randomly selected.
+
+
+Subsection: Bandits
+
+Bandit algos (from gambling) manage trade-off between exploring (new models) and exploiting (old verified models). ML model = 'slot machine' w/unknown predictive accu. Bandit algos determine best model while maximizing accuracy through continual online preds, short feedback loops, and calculating and tracking each model's performance. Bandits are more data-efficient than A/B testing and require lesser data to deduce best model and speedily direct traffic to it. In a Google-led experiment, a simple bandit algo (Thompson Sampling) identified a superior model with far fewer samples than A/B testing. However, bandits are more difficult to implement: the need to compute and track models' payoffs => they are used only in the industry.
+
+Different strategies for model selection. Example - greedy algos dedicating 90% of traffic to best-performing model and remaining 10% to random model. Exploration algorithms: a) Thompson Sampling - selects model based on proba that it is optimal at the time, b) Upper Confidence Bound (UCB) - selects model with highest confidence bound adding 'exploration bonus' for uncertain items => expressing optimism in the face of uncertainty.
+
+Contextual bandits in recommender systems help address the problem of offering the right balance between presenting items that users are likely to prefer, and presenting items for which feedback is needed => solve the partial feedback problem in a local setting when they allow immediate feedback after an action is taken (while traditional reinforcement learning demands a series of actions before rewards are visible). Effective, but complex to execute as the strategy of exploration depends on ML model architecture, which limits generalizability across use cases.
+
+
+CHAPTER 10. Infrastructure and Tooling for MLOps
+
+It is important to properly set up infrastructure for successful ML operations (MLOps) - crucial in automating processes, reducing need for specialized knowledge, speeding up development, limiting bugs, and enabling new apps, requires an upfront investment but, if done right, it can simplify the work of data scientists across the company
+
+At one end of the spectrum, companies using ML for simple or ad hoc business analytics may require minimal infrastructure, using basic tools like Jupyter Notebooks, Python, and Pandas. Large tech companies with unique requirements such as Google and Tesla develop highly specialized infrastructure to manage their massive scale or high precision needs. Most companies fall in the middle of this spectrum, working with common ML applications at a reasonable scale. Such companies often benefit from generalized ML infrastructure that’s increasingly standardized. Several layers of infrastructure should be considered: storage and compute, resource management, ML platform, and development environment.
+
+
+Section: Storage and Compute
+
+* Storage: on-premises storage or commoditized cloud storage solutions such as Amazon S3.
+* Compute layer - computational resources for ML tasks: CPU or GPU cores, smaller units for concurrent use. Common tools - virtual machines and cloud compute services like AWS EC2 and GCP instances. Concepts of cores and threads may be abstracted, with computation engines using job-focused units.
+* Effectiveness of compute unit = memory capacity (GB) + processing speed (FLOPS (floating point operations per second)), achieving 100% utilization rate is almost impossible. Computational efficiency = common workloads + overall hardware performance. MLPerf used for benchmarking the length of training models. # cores a unit possesses - simpler way to evaluate compute performance.
+
+
+Subsection: Public Cloud Versus Private Data Centers
+
+The compute and data storage layers are highly commoditized = companies pay cloud providers like AWS and Azure, benefits organizations with variable workloads by adjusting compute power as necessary and only paying for what they use. Despite limits that may be placed on compute resources in cloud, the convenience and ease of it makes companies pay for cloud services vs. own infrastructure. Enterprise spending on cloud infrastructure rose by 35%, while spending on data centers decreased by 6% in 2020.
+
+As companies grow, cost-effectiveness of cloud decreases - around 50% of public software companies' revenue is spent on cloud infrastructure. Some businesses began cloud repatriation = moving to in-house data centers, example: Dropbox saved $75M over two years. But moving away from cloud requires significant upfront investment in commodities and engineering effort => many businesses adopt hybrid approach - maintaining many workloads on cloud while increasing investment in in-house data centers.
+
+
+Subsection: On Multicloud Strategy
+
+Minimizing dependence on a single cloud provider by distributing workloads over multiple clouds to utilize the best, cost-effective technologies avoiding vendor lock-in. 80% of organizations use two or more public cloud providers like GCP, Azure, and AWS. Multicloud strategies often arise out of necessity, not choice when different organizational segments make independent cloud decisions or after an acquisition, where the acquired team uses a different cloud.
+
+
+Section: Dev Env
+
+Critical for ML engineers, consists of IDE, versioning, and CI/CD, but it's often underinvested.
+
+
+Subsection: Dev Environment Setup
+
+Versioning tools: Git, DVC, Weights & Biases, Comet.ml for regulating the ML workflows. MLflow is important for tracking model artifacts upon deployment, Claypot AI platform used for all-encompassing workflow versioning and tracking. Versioning in ML projects is significant due to the variability in code, parameters, and data, tracking past runs for future reproductions. Need to integrate the CI/CD test suite in dev env, recommended orchestrating tools: GitHub Actions and CircleCI.
+
+
+Subsection: IDE
+
+Editors for writing code in many languages as apps or browser-based: Jupyter Notebooks and Google Colab for EDA and experiments - additional benefits: including images and plots for analysis, being stateful - rerunning from any cell. Papermill spawns multiple notebooks with different parameters, Commuter allows viewing and sharing notebooks within an organization, nbdev project improves notebook experience by writing docs and tests in the same place.
+
+
+Subsection: Standardizing Dev Envs
+
+By specifying not just package names but also their versions (to avoid package discrepancies), specifying Python versions OR turning to cloud dev env to avoid compatibility issues with new hardware which also offers machine independency, enhanced security, and easier IT support. In remote work one can access dev env from any computer; if laptop stolen (security issue) - access to cloud is revoked. I prod env is also in cloud, this reduces differences between dev and prod envs. Cloud envs may not suit all companies due to cost, security, initial investments, etc. => Services like GitHub Codespaces (automatically shuts down instances after 30 minutes of inactivity) or low-cost Amazon's EC2 instances can mitigate cost concerns.
+
+
+Subsection: From Dev to Prod: Containers
+
+Fluctuating or unpredictable workloads may require the use of multiple instances. Docker technology simplifies this by creating Dockerfile w/step-by-step instructions to re-create env for model run. Docker image resulting from executing Dockerfile instructions generates a Docker container. Docker images can be built from scratch or using other Docker images, and shared on container registries.
+
+There might be a need for multiple containers if code has conflicting dependencies or varying compute / memory requirements (featurizing on CPU, training on GPU). Managing multiple containers on a single host - container orchestration tools like Docker Compose. Managing containers on multiple hosts - more robust Kubernetes (K8s) - creates a network for containers to communicate and share resources, scaling autoload by spinning up or shutting down containers as necessary; often regarded as lacking data-scientist-friendly tools.
+
+
+Section: Resource Management
+
+Traditionally, resource management centered on maximizing the utility of limited compute and storage resources, but w/elasticity of resources in cloud focus has tilted towards cost-effective usage. Allocation is simpler in the cloud - adding resources to one app doesn't deprive others. Companies justify increasing resources if the additional cost counterbalanced by benefits like increased revenue or saved engineering time. Value of engineers' time > value of compute time => businesses prefer more resources. Automation of workloads preferred to allow engineers to focus on high-return tasks.
+
+
+Subsection: Cron, Schedulers, and Orchestrators
+
+Repetitive ML processes (routine model training and predictions) - can be managed by scheduling tools like cron. However, cron does not handle the dependencies between jobs (jobs depend on one another's success - DAG) - need scheduling tools. Schedulers = advanced cron programs, handle dependencies by scheduling each step according to its DAG, can schedule jobs based on event triggers, manage tasks according to their success or failure; schedulers manage and optimize resource utilization by leveraging queues to track jobs, prioritize them, and allocate necessary execution resources; they are required to be conscious of resources needed for each job and what is available. Some sophisticated schedulers like Google's Borg can optimize resource utilization by estimating actual resources for a job and reassigning unused resources. Designing reliable, general-purpose scheduler is challenging - must handle variable number of concurrent machines and workflows. 
+
+While schedulers are concerned with when and how to run jobs, orchestrators focus on procuring the resources for them, handle lower-level abstractions such as machines, clusters, and replication, and they can provision more computers if the available instances are insufficient. Kubernetes - one of best known orchestrators, used for long-running servers while schedulers are more utilized for periodical jobs. Line between schedulers and orchestrators is often blurred, certain orchestrators like HashiCorp Nomad, Airflow, Argo, Prefect, and Dagster come with built-in schedulers.
+
+
+Subsection: Data Science Workflow Management
+
+Workflow management tools: Airflow, Argo, Prefect, Kubeflow, Metaflow. If such tool utilizes DAGs for task management, it performs better when paired with schedulers that focus on entire workflow rather than individual tasks.
+
+Deficiencies in early systems like Airflow: lacking parameterization and dynamic capabilities, challenges of using different containers for different tasks. Modern tools such as Prefect and Argo rectify these issues by implementing parameterized and dynamic workflows and prioritizing containerized steps, respectively. However, Prefect still requires users to manually deal with Dockerfiles and Argo can only run on Kubernetes (K8s) clusters.
+
+Kubeflow and Metaflow were developed to abstract infrastructure boilerplate codes, providing data scientists with easier access to computational resources in both development and production environments. Kubeflow, built on Argo, collaborates well with K8s, while Metaflow is compatible with AWS Batch or K8s. Despite having some scheduling capabilities, these tools work better in tandem with a dedicated scheduler and orchestrator. Metaflow prevails - Python decorator functionality specifying requirements for each step with easy to manage keywords => reduce need for writing Dockerfiles or YAML files. Moreover, Metaflow allows for seamless transitioning between local and cloud environment depending on the computation requirements of each step, by simply adding a decorator.
+
+
+Subsection: ML Platform
+
+ML platform provides tools and infrastructure for ML applications across the company, 2020 trend - companies leverage shared tools for multiple ML applications, rather than supporting separate tools for each. Composition of ML platform: model development, model store, and feature store. Need to consider compatibility with cloud providers or your data center + decide between open source or managed service.
+
+
+Section: Model Deployment
+
+ML models are deployed endpoints for user access. Key methods:
+* online preds in real-time, simpler
+* precomputed batch preds, requiring separate pipelines,
+* model deployment tools provided by AWS, GCP, Azure, Alibaba, MLflow Models, Seldon, Cortex,
+* quality assurance before deployment: shadow deployment, canary release, A/B test, etc.
+
+
+Subsection: Model Store
+
+In order to have complete model information for debugging and maintenance, ensure model performance, usage of correct data processing pipelines, features, and models, a model store must contain as much information relating to a model as possible: model artifacts including model definition and parameters, featurize and predict functions, dependencies, data, model generation code, experiment artifacts, and tags (such as owner or task). Some companies store subsets of this info which can scattered across various platforms such as S3, ECS, Snowflake, etc. Other companies build their own model stores to put everything in one place for enhanced transparency, accessibility, and functionality.
+
+
+Subsection: Feature Store
+
+Used for:
+* feature management - sharing features among different models within a company, controlling access to these features. Helpful tools: Amundsen and DataHub
+* feature computation - defines and calculates features based on the set logic. If feature computationally expensive - compute once and store (acting like data warehouse).
+* feature consistency - maintains same feature definitions across training and inference pipelines (even if different programming languages), streamline both batch and streaming features.
+
+Capabilities vary: some feat stores manage feature definitions, others compute features or validate them. Notable feature stores: Feast, Tecton, SageMaker, Databricks. 40% of companies use a feat store, half of them build their own.
+
+
+Subsection: Build Versus Buy
+
+ML infrastructure and scale vary. Companies handling sensitive data may prefer in-house solutions, while others may opt for external management of their ML applications. Build or buy decision depends on company's focus, availability of mature tools, stage of the company (early stage prefer vendor solutions, companies with engineering teams prefer building). Companies design custom infrastructure to cater to specific needs when vendor solutions are not mature enough. Building is not necessarily cheaper - hiring more engineers and potential future integration costs.
+
+
+CHAPTER 11. The Human Side of ML (This GPT-4 summary is not summarized by me)
+
+The text discusses the human aspects involved in the design of ML systems, emphasizing that these systems are not just technical, but also involve stakeholders like business decision makers, users, and developers. It explores how the probabilistic nature of ML models may alter user experiences. It also notes the importance of organizational structure in facilitating effective collaborations among developers of the same ML system. The text ends by considering the broader societal impacts of ML systems, under the topic "Responsible AI".
+
+
+Section: User Experience
+
+ML systems differ from traditional software systems in several ways. First, they are probabilistic, which means they might yield varied results even when run with the same input. Second, their predictions tend to be mostly accurate, but it's hard to ascertain which inputs will yield correct results. Third, they can be large and may take a longer time to generate predictions.
+
+These differences imply that ML systems can influence user experience distinctly from traditional software, especially for users unfamiliar with ML. As ML usage in real-world applications is relatively new, its effects on user experience remain largely unexplored. The text discusses three challenges posed by ML systems to user experience and suggests ways to tackle them.
+
+
+Subsection: Ensuring User Experience Consistency
+
+Users expect a level of consistency when using applications, however, ML predictions, being probabilistic, are often inconsistent. This inconsistency can pose a challenge in improving user experience. For instance, Booking.com's applied ML team faced difficulties when their system kept suggesting different filters for user preferences each time, causing user confusion. They resolved this issue by establishing rules specifying when the system should return the same filters and when it can suggest new ones, dealing with a trade-off between consistency and accuracy. This highlights the challenge of maintaining user consistency while providing accurate ML predictions.
+
+
+Subsection: Combatting “Mostly Correct”
+
+The text discusses the designing of ML systems, with a focus on the large language model GPT series (including GPT, GPT-2, and GPT-3) that can generate predictions for different tasks without requiring much task-specific training data. These models can generate code from specified requirements such as for webpage development. However, the models have limitations as their predictions are not always accurate and refining them requires considerable resources. These models are beneficial if users can correct them readily, but face difficulties when users do not have the skills to do so. 
+
+To address these limitations, multiple predictions can be presented to users, based on a single input, thus improving the chances of finding a usable prediction. The output should be simple enough for the non-experts to evaluate and select a suitable prediction. The text refers to this as the "human-in-the-loop" AI approach, since it relies on humans interacting with AI to obtain optimum predictions. Despite their limitations, these systems can expedite tasks such as customer support responses and website development. However, better results are obtained when used by individuals with the requisite skills to correct generated predictions.
+
+
+Section: Smooth Failing
+
+The text discusses the challenges and potential solutions concerning the latency of a ML model’s inference on user experience. While techniques like model compression can optimize the model for faster inference speed, issues may still arise, particularly with language models or time-series models processing sequential data. To address this, some companies use a backup system—a simpler, speedier model or cached precomputed predictions. A rule may indicate if the primary model's response exceeds a certain time limit, the backup system should take over. Alternatively, an additional model could predict how long the main model would take to generate predictions and then route the query accordingly. This scenario indicates a trade-off between speed and accuracy. Although the backup model might not be as accurate, it could be beneficial in situations where quick response times are key. This strategy enables companies to maintain a balance between accuracy and speed, using a primary model for accuracy and a backup for speed.
+
+
+Section: Team Structure
+
+The text discusses the composition and structure of ML project teams, highlighting the inclusion of data scientists, ML engineers, DevOps engineers, platform engineers, and non-developer stakeholders like subject matter experts. It underscores the need for an optimal team organization, focusing on the cross-functional team collaboration and the contentious role of an end-to-end data scientist.
+
+
+Subsection: Cross-functional Teams Collaboration
+
+Subject Matter Experts (SMEs) are pivotal to the design of ML systems, not just as users, but also as developers. Their input is crucial beyond merely the data labeling phase, and also spans the entire life-cycle of an ML system, including problem identification, feature engineering, error review, model evaluation, predictions adjustment, and user-interface design. However, integrating SMEs into these processes comes with challenges, such as explaining ML algorithms' capabilities or translating domain expertise into versioned code. Therefore, empowering SMEs early on in the project phase and allowing them to contribute without needing code skills is essential. Some approaches to facilitate this include the creation of no-code/low-code platforms, which are now extending beyond labeling and quality assurance stages to other critical areas such as dataset creation and troubleshooting that require SME input.
+
+
+Subsection: End-to-End Data Scientists
+
+The text suggests that effective ML production relies not just on ML skills but also on operational expertise, particularly in deployment, containerization, job orchestration, and workflow management. This is termed as MLOps. At a corporate level, effective ML projects can be executed using two main models. One is having a specialized team to handle all operational aspects, and the other is integrating data scientists who are capable of managing the entire process.
+
+
+Subsection: Approach 1: Have a separate team to manage production
+
+The text discusses the approach of splitting responsibilities between two teams in ML systems: data science/ML team responsible for developing models and the Ops/platform/ML engineering team for productionizing the models. This division of roles makes hiring easier and allows team members to focus on specific tasks. However, it poses several challenges including: communication and coordination overhead, which could delay the project; difficulty in debugging, as it requires the collaboration of multiple teams; finger-pointing, with teams shifting the responsibility of fixing problems; and a narrow context, with no one having a full understanding of the entire process to propose optimizations, illustrated by the disconnect between data scientists and the platform team on infrastructure improvements.
+
+
+Subsection: Approach 2: Data scientists own the entire process
+
+The author discusses the demanding nature of ML engineering and data science, emphasizing the need to bridge the gap between data science and infrastructure operation for better model production. Initially, the author believed that data scientists needed to acquire wide-ranging skills across data querying, modeling, distributed training and handling tools such as Kubernetes; however, this expectation was deemed unreasonable as these roles require different skill sets. Spending more time on one leads to less time for the other. A solution suggested is the development of tools that abstract complexities of infrastructure, enabling data scientists to manage the process from end-to-end. The author also introduces the role that organizational structure plays in the productivity of ML projects and stresses the need to consider the societal impact of ML systems, urging developers to ensure their systems do more good than harm.
+
+
+Section: Responsible AI
+
+The text is contributed by Abhishek Gupta from the Montreal AI Ethics Institute and primarily addresses the concept of responsible AI, which includes ML systems. AI, a broader term that includes ML, ought to be designed, developed, and deployed responsibly, with the focus on empowering users, engendering trust, and ensuring societal benefit. The aspects to be considered include fairness, privacy, transparency, and accountability, with these considerations being crucial for policy-makers and practitioners. As ML pervades everyday life, any lapses could lead to steep repercussions as discussed in Cathy O'Neil's "Weapons of Math Destruction" and other case studies. Consequently, developers bear the dual responsibility of contemplating the societal impact of their systems and making them ethical, safe, and inclusive. Developers need to take active steps to make ML systems responsible. The text continues by sharing a preliminary framework for selecting tools and guidelines that facilitate responsible ML development. While acknowledging the complexity of the topic and its growing literature, the section recommends multiple resources for further reading, including 'NIST Special Publication 1270' and the ACM Conference on Fairness, Accountability, and Transparency publications, among others.
+
+
+Section: Irresponsible AI: Case Studies
+
+The given text focuses on the vigorous study of AI system failures that led to considerable backlash for both users and developing companies. It uses these insights to lay groundwork for an engineering framework dedicated to responsible AI, underscoring the importance of anticipating potential points of failure. The text also mentions the AI Incident Database, a compilation of known "AI incidents," warning readers that many instances of irresponsible AI often occur without public notice or scrutiny.
+
+
+Subsection: Case study I: Automated grader’s biases
+
+In 2020, when the UK cancelled its high-stakes A-level exams due to COVID-19, Ofqual, the regulatory body for education in the UK, used an automated system to assign final grades based on a combination of previous data and teacher assessments. The results, however, were controversial due to perceived biases and the lack of transparency about the system. The objective of 'maintaining standards' across schools had apparently been chosen over individual student accuracy, resulting in higher-performing students from historically lower-performing schools being disproportionately downgraded.
+
+The model also seemed to lack sufficient fine-grained evaluation to account for biases against students from historically low-performing schools and did not adequately consider the context for schools with fewer resources. Although teachers' own assessments were factored into the grade predictions, issues of teacher bias and consistency in evaluations across different demographic groups remained unaddressed. The model also failed to consider the negative impact on some protected groups under the 2010 Equalities Act. 
+
+Ofqual's transparency about their grading system was lacking. The public weren't informed about the objectives of the system before grades were published and only learned about how teachers' assessments would be used after the fact. Although Ofqual didn't release the exact model being used until results day to ensure everyone would find out their results at the same time, the lack of outside scrutiny brought into question the legitimacy of Ofqual's statistical model. The case underlines the necessity for greater transparency in AI models, the proper selection of objectives, and a sober evaluation of whether or not certain critical functions should be automated in the first place.
+
+
+Subsection: Case study II: The danger of “anonymized” data
+
+The text discusses the intricacies of designing ML systems, emphasizing the importance of data collection and the potential pitfalls it carries, particularly regarding privacy and security. It outlines the necessity for high-quality datasets for the research community and companies, to devise new techniques and AI-powered products. However, it alerts to privacy threats of collecting and sharing such datasets, even when personally identifiable information (PII) is anonymized.
+
+An example of this is illustrated with Strava, an online fitness tracker that published an anonymized global heatmap of user activities, inadvertently revealing patterns of military activity. This instance demonstrates that anonymization alone is not enough to prevent misuse of data and erosion of privacy expectations.
+
+The case study identifies the root issue as the ubiquitous data collection and reporting by modern devices, opening avenues for data misuse. The problems with default opt-out privacy settings are discussed, with the text suggesting a switch to opt-in as a default and better user education on privacy settings.
+
+Lastly, it acknowledges the crucial role of data collection for AI development but underscores the necessity for developers to ensure proper privacy settings are default, despite this potentially resulting in less data collected. Also, they must understand that users may lack the technical expertise to effectively manage their own privacy settings.
+
+
+Section: A Framework for Responsible
+
+The text provides a foundation for ML practitioners to audit model behaviors and establish project-specific guidelines. This framework might not be applicable to all use cases and applications, particularly when the use of AI could be inappropriate or unethical such as in criminal sentencing decisions or predictive policing.
+
+
+Subsection: Discover sources for model biases.
+
+The text discusses the potential sources of biases in designing ML systems and methods to mitigate them. Bias can infiltrate the ML workflow at various stages: 
+
+1. Training data: If the data used to develop the model does not represent the real-world scope, the model may be prejudiced against underrepresented user groups.
+   
+2. Labeling: When human annotators are used for data labeling, there can be discrepancies in annotation quality and potential introduction of human biases if labelling is overly reliant on subjective experiences.
+
+3. Feature engineering: Bias can be caused if the model uses features linked to sensitive information or if it impacts a subgroup of people disproportionately (disparate impact). This can occur even if these sensitive features are not directly used in training, such as when the decision relies on factors indirectly related to legally protected classes. The author suggests using techniques like the Disparate Impact Remover or the Infogram method to mitigate this.
+
+4. Model’s objective: The problem can also rise from the model's performance optimization objectives that may favor the majority user group.
+
+5. Evaluation: A biased evaluation can result from inadequate, unrefined evaluation data, causing the model's performance to be misjudged across different user groups. 
+
+The text emphasizes the importance of identifying, understanding, and addressing these potential sources of bias for the development of fair and effective ML systems.
+
+
+Subsection: Understand the limitations of the data-driven approach
+
+ML is a problem-solving method based on data. However, simply having data is not enough. Key considerations include the real world socio-economic and cultural aspects tied to the data. Understanding these elements can help identify "blind spots" caused by over-reliance on data. It's necessary to consider different perspectives within and outside the organization to capture the experiences of those affected by the system. For instance, when creating an automated grading system, it's crucial to collaborate with domain experts to understand the demographic makeup of the students and how socio-economic factors are reflected in their historical performance data.
+
+
+Subsection: Understand the trade-offs between different disedirata.
+
+In building ML systems, there is a need to balance various properties, such as low inference latency, high predictive accuracy, fairness, and transparency. These can be achieved through model compression techniques, enlarging the dataset, or making the model and data publicly scrutinizable, respectively. However, ML literature often inaccurately assumes that optimizing one property does not affect others, whereas in reality, there are trade-offs. 
+
+Firstly, there is a trade-off between privacy and accuracy in ML models. Differential privacy, a technique used in training datasets, can reduce the model’s accuracy when privacy levels are increased. This drop in accuracy is more significant for underrepresented classes and subgroups. 
+
+Secondly, there is a conflict between model compactness and fairness. Model compression techniques such as pruning and quantisation can significantly reduce the model’s size with minimal accuracy cost, unless the cost is concentrated in certain classes. Particularly, these compression techniques can notably affect underrepresented features. Notably, pruning incurs a much higher disparate impact compared to quantization techniques. 
+
+As such, it is pivotal to recognize these trade-offs when designing ML systems, especially if they are compressed or involve differential privacy. It is suggested to allocate more resources to auditing model behavior to mitigate unintended harm.
+
+
+Subsection: Act early
+
+In constructing ML systems, companies often sacrifice ethical considerations for time and cost savings, analogous to a building's construction with poor-quality materials. Just like how foregone supervisions and low-quality materials result in a faulty building that eventually costs more time and money, skipping ethical considerations in ML can also bring forth costly risks later on. Early consideration of potential biases and effects of ML systems on users can reduce these risks and save costs. A NASA study validates this, observing that the expense to fix errors in software development increase significantly at every successive stage of the project lifecycle.
+
+
+Subsection: Create model cards
+
+Model cards are brief documents that provide details on trained ML models, including their training, evaluation, intended use, and limitations. This concept standardizes ethical practice and reporting by allowing stakeholders to compare models in terms of traditional metrics and ethical considerations. Model cards contain various sections: model details (including information about the developers, type, training algorithms, citation details, and so on), intended uses, relevant factors, performance metrics, evaluation data, training data, quantitative analyses, and ethical considerations. They are crucial for transparency, particularly when models' end users are different from their developers. As models are updated, so too must their corresponding model cards, which could require automated generation given the potential demands on data scientists' time. Tools like TensorFlow, Metaflow, and scikit-learn offer model card generation features, and it's predicted that model stores may evolve to auto-generate model cards due to their overlapping information requirements.
+
+
+Subsection: Establish processes for mitigating biases
+
+Designing responsible AI is a complicated procedure that needs systematic processes to minimize errors. Businesses should consider developing a collection of internal tools for varying stakeholders and consider third-party audits in addition to referencing tools from big corporations like Google and IBM. Keeping up-to-date with the latest advancements in AI is crucial to identify new biases and challenges, with resources like the ACM FAccT Conference and the AI Now Institute being useful references.
